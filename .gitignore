@@ -1,1 +1,44 @@
+# Secrets et configuration locale
 .env
+*.env.local
+firmware/secrets.py
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+db.sqlite3
+backend/staticfiles/
+backend/media/
+
+# Node / React
+node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+
+# Docker
+*.log
+pgdata/
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+
+# IDE et système
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
