@@ -48,7 +48,7 @@ docker-compose up --build
 | B |  &  | Données, API, étalonnage |
 | C |  &  | Interface, missions, tableau de bord |
 | D |  &  | Robot, mobilité, tests d'intégration |
-| E |  &  | Capteurs, décision, communication |
+| E |  Danella & Messie | Capteurs, décision, communication |
 
 ## Avancement
 
