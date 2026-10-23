@@ -31,7 +31,7 @@
 2. Cloner le dépôt :
 ```bash
    git clone <url-du-depot>
-   cd roboagri-kin
+   cd .\atlantis-roboAgri
 ```
  
 3. Créer sa branche :
