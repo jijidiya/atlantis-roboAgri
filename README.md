@@ -44,15 +44,15 @@ docker-compose up --build
 
 | Binôme | Membres | Responsabilités |
 |---|---|---|
-| A | Junior & Asha| Coordination, documentation, spécifications |
-| B | Sabin & Gabriel | Données, API, étalonnage |
-| C | Jeanine & Magnificat | Interface, missions, tableau de bord |
-| D | Bramcy & Astride | Robot, mobilité, tests d'intégration |
-| E | Danella & Messie | Capteurs, décision, communication |
+| A | Junior & | Coordination, documentation, spécifications |
+| B |  &  | Données, API, étalonnage |
+| C |  &  | Interface, missions, tableau de bord |
+| D |  &  | Robot, mobilité, tests d'intégration |
+| E |  &  | Capteurs, décision, communication |
 
 ## Avancement
 
-Voir l'onglet **Projects** du dépôt et les **Milestones** (S1 à S8).
+Voir l'onglet **Projects** du dépôt.
 
 ## Contribuer
 
