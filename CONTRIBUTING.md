@@ -40,14 +40,18 @@ Petits commits, fréquents, un sujet par commit.
 
 Une PR doit rester petite et lisible : une fonctionnalité ou un correctif à la fois.
 
+## Conventions de code
+Voir [docs/conventions.md](docs/conventions.md). Elles s'appliquent à toute PR.
+
 ## Revue de code
 - Relire le code comme si on devait l'expliquer à la soutenance.
 - Être précis et bienveillant dans les commentaires.
 - Approuver seulement si on a compris ce que fait le code.
 
 ## Suivi du travail
-- Chaque tâche = une **Issue**, avec le label de son binôme et un milestone.
+- Chaque tâche = une **Issue**, avec le label de son binôme.
 - Lier la PR à l'issue (`Closes #12` dans la description).
 
 ## Usage de l'IA
-Tout usage d'outils d'IA doit être déclaré selon les consignes de l'enseignant. Chacun doit comprendre et savoir défendre le code qu'il pousse.
+Tout usage d'outils d'IA doit être déclaré selon les consignes de l'enseignant.
+Voir [docs/AI_USAGE.md](docs/AI_USAGE.md). Elles s'appliquent à toute PR.
