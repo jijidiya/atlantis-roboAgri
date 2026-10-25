@@ -44,7 +44,7 @@ docker-compose up --build
 
 | Binôme | Membres | Responsabilités |
 |---|---|---|
-| A | Junior & | Coordination, documentation, spécifications |
+| A | Junior & Esther | Coordination, documentation, spécifications |
 | B |  &  | Données, API, étalonnage |
 | C |  &  | Interface, missions, tableau de bord |
 | D |  &  | Robot, mobilité, tests d'intégration |
