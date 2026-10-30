@@ -47,8 +47,12 @@ docker-compose up --build
 | A | Junior & Esther | Coordination, documentation, spécifications |
 | B | Sabin &  | Données, API, étalonnage |
 | C | Magnificat & | Interface, missions, tableau de bord |
-| D |  Bramcy & Astride  | Robot, mobilité, tests d'intégration |
-| E |  Danella & Messie | Capteurs, décision, communication |
+| D | Bramcy & Astride  | Robot, mobilité, tests d'intégration |
+| E | Danella & Messie | Capteurs, décision, communication |
+| B | Sabin & Gabriel | Données, API, étalonnage |
+| C | Magnificat & Jeanine | Interface, missions, tableau de bord |
+| D |  Bramcy &  | Robot, mobilité, tests d'intégration |
+| E |  Danella & Messie. | Capteurs, décision, communication |
 
 ## Avancement
 
