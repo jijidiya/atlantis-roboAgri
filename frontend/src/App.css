@@ -1,0 +1,14 @@
+body { font-family: sans-serif; background: #f6f8fa; margin: 0; }
+.cartes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+.stat-titre { color: #6b7280; font-size: 14px; margin: 0; }
+.stat-valeur { font-size: 28px; font-weight: 700; margin: 8px 0; }
+.stat-details { color: #b45309; font-size: 12px; margin: 0; }
+
+
+.layout { display: flex; min-height: 100vh; }
+.sidebar { width: 240px; background: white; border-right: 1px solid #e5e7eb; padding: 16px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 4px; }
+.sidebar a { padding: 10px 12px; border-radius: 8px; color: #374151; text-decoration: none; }
+.sidebar a.active { background: #e6f4ec; color: #166534; font-weight: 600; }
+.contenu { flex: 1; padding: 24px; }
