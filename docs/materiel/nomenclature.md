@@ -20,13 +20,13 @@ Les prix indiqués sont ceux **proposés par le fournisseur** : ils sont à conf
 
 | N° | Composant | Fonction | Qté | Prix unitaire (USD) | Fournisseur | Solution de remplacement | Statut |
 |---|---|---|---|---|---|---|---|
-| 1 | Carte ESP32 DevKit | Cerveau du robot, communication Wi-Fi | 2 conseillé | 30 | Landry Motanda | Autre carte ESP32 compatible | Devis reçu |
+| 1 | Carte ESP32 DevKit | Cerveau du robot, communication Wi-Fi | 2  | 30 | Landry Motanda | Autre carte ESP32 compatible | Devis reçu |
 | 2 | Câble USB de données | Programmer l'ESP32 | 1 |  |  |  | À acheter |
 | 3 | Kit châssis 2 roues (2WD) | Corps, moteurs et roues | 1 | 20 | Landry Motanda | Châssis fabriqué en carton plume ou en plastique | Devis reçu |
-| 4 | Module L298N | Commande des moteurs | 2 conseillé | 15 | Landry Motanda | Autre pont en H (par exemple L9110S) | Devis reçu |
-| 5 | Capteur HC-SR04 | Détection des obstacles | 2 conseillé | 10 | Landry Motanda | Capteur à ultrasons équivalent | Devis reçu |
+| 4 | Module L298N | Commande des moteurs | 2  | 15 | Landry Motanda | Autre pont en H (par exemple L9110S) | Devis reçu |
+| 5 | Capteur HC-SR04 | Détection des obstacles | 2  | 10 | Landry Motanda | Capteur à ultrasons équivalent | Devis reçu |
 | 6 | Capteur d'humidité capacitif | Mesure de l'humidité du sol | 1 | 5 | Landry Motanda | Capteur résistif (moins durable) | Devis reçu |
-| 7 | Servomoteur SG90 ou MG90S | Descend et remonte la sonde d'humidité | 2 conseillé | 10 | Landry Motanda | Autre micro-servomoteur | Devis reçu |
+| 7 | Servomoteur SG90 ou MG90S | Descend et remonte la sonde d'humidité | 2  | 10 | Landry Motanda | Autre micro-servomoteur | Devis reçu |
 | 8 | Condensateur 470 à 1000 µF | Amortit les pics de courant du servomoteur | 1 à 2 |  |  | Récupération sur une carte électronique | À acheter |
 | 9 | Piles 18650, support et chargeur | Alimentation des moteurs | 1 ensemble |  |  | Bloc de piles AA (6 V) | À acheter |
 | 10 | Batterie externe (power bank) | Alimentation de l'ESP32 et du servomoteur | 1 |  |  | Batterie externe déjà disponible | À acheter |
