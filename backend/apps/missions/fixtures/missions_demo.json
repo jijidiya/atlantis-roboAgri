@@ -1,0 +1,13 @@
+[
+  {"model": "missions.mission", "pk": 1, "fields": {"statut": "terminee", "prevue_le": "2026-11-02T07:00:00Z", "debutee_le": "2026-11-02T07:02:00Z", "terminee_le": "2026-11-02T07:20:00Z", "cree_le": "2026-11-01T18:00:00Z"}},
+  {"model": "missions.mission", "pk": 2, "fields": {"statut": "interrompue", "prevue_le": "2026-11-03T07:00:00Z", "debutee_le": "2026-11-03T07:01:00Z", "terminee_le": null, "cree_le": "2026-11-02T18:00:00Z"}},
+  {"model": "missions.mission", "pk": 3, "fields": {"statut": "planifiee", "prevue_le": "2026-11-05T07:00:00Z", "debutee_le": null, "terminee_le": null, "cree_le": "2026-11-04T18:00:00Z"}},
+
+  {"model": "missions.etapemission", "pk": 1, "fields": {"mission": 1, "zone": 1, "ordre": 1}},
+  {"model": "missions.etapemission", "pk": 2, "fields": {"mission": 1, "zone": 2, "ordre": 2}},
+  {"model": "missions.etapemission", "pk": 3, "fields": {"mission": 2, "zone": 1, "ordre": 1}},
+  {"model": "missions.etapemission", "pk": 4, "fields": {"mission": 2, "zone": 3, "ordre": 2}},
+  {"model": "missions.etapemission", "pk": 5, "fields": {"mission": 3, "zone": 1, "ordre": 1}},
+  {"model": "missions.etapemission", "pk": 6, "fields": {"mission": 3, "zone": 2, "ordre": 2}},
+  {"model": "missions.etapemission", "pk": 7, "fields": {"mission": 3, "zone": 3, "ordre": 3}}
+]
