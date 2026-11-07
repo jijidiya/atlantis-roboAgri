@@ -51,3 +51,55 @@ body { font-family: sans-serif; background: #f6f8fa; margin: 0; }
 .barre-remplie { height: 100%; background: #166534; transition: width 0.3s; }
 .bouton-petit { margin: 2px 4px 2px 0; padding: 4px 8px; font-size: 12px; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer; }
 .bouton-petit:hover { background: #f3f4f6; }
+
+
+
+.onglets { display: flex; gap: 8px; margin-bottom: 12px; border-bottom: 1px solid #e5e7eb; }
+.onglet { background: none; border: none; padding: 8px 12px; cursor: pointer; color: #6b7280; font-size: 14px; border-bottom: 2px solid transparent; }
+.onglet.actif { color: #166534; font-weight: 600; border-bottom-color: #166534; }
+.formulaire-ligne { display: flex; gap: 12px; margin-top: 12px; }
+.formulaire-ligne select { padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; flex: 1; }
+.bouton-principal { background: #166534; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+
+.titre-ligne { display: flex; justify-content: space-between; align-items: flex-start; }
+.grille-zones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0 24px; }
+.grille-zones .carte-mission { margin: 0; }
+.seuils { display: flex; gap: 12px; margin: 12px 0; }
+.seuils label { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.seuils input { padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; width: 100%; box-sizing: border-box; }
+.alerte { display: flex; flex-direction: column; gap: 2px; padding: 12px 16px; border-radius: 12px; margin: 12px 0; font-size: 14px; }
+.alerte-orange { background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; }
+.message { background: #e6f4ec; color: #166534; padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+.texte-rouge { color: #b91c1c; }
+
+
+.incidents-mise-en-page { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; align-items: start; }
+.ligne-cliquable { cursor: pointer; }
+.ligne-cliquable:hover { background: #f9fafb; }
+.ligne-selection { background: #e6f4ec; cursor: pointer; }
+.panneau-detail { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.badges-ligne, .boutons-ligne { display: flex; gap: 8px; }
+.boutons-ligne { justify-content: flex-end; margin-top: 8px; }
+.panneau-detail ul { margin: 0; padding-left: 18px; font-size: 13px; color: #374151; }
+
+
+.filtres { display: flex; gap: 12px; margin-bottom: 12px; }
+.filtres input { flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; }
+.filtres select { padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; }
+
+
+.rangee-graphiques { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0 24px; }
+.rangee-graphiques .carte-mission { margin: 0; }
+
+
+
+.champs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.champs label { display: flex; flex-direction: column; gap: 4px; }
+.champs input { padding: 8px; border: 1px solid #d1d5db; border-radius: 8px; }
+.ligne-option { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+
+.toggle { width: 40px; height: 22px; border-radius: 999px; border: none; background: #d1d5db; padding: 2px; cursor: pointer; transition: background 0.2s; }
+.toggle span { display: block; width: 18px; height: 18px; border-radius: 50%; background: white; transition: transform 0.2s; }
+.toggle.on { background: #166534; }
+.toggle.on span { transform: translateX(18px); }

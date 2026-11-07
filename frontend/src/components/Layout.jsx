@@ -3,6 +3,11 @@ import {
   LayoutDashboard, Map as MapIcon, Layers, Route as RouteIcon, Radio,
   Droplets, TriangleAlert, History, ChartColumn, Settings,
   Bell, BatteryMedium, Sprout,
+  LogOut,
+  MoonIcon,
+  Margin,
+  Settings2,
+  Settings2Icon,
 } from 'lucide-react'
 
 const liens = [
@@ -56,7 +61,6 @@ function Layout() {
             </div>
           </div>
         </header>
-
         <main className="contenu">
           <Outlet />
         </main>
