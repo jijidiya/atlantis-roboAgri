@@ -1,0 +1,4 @@
+# Évite que Windows convertisse les fins de ligne des scripts montés dans Docker.
+*.sql text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
