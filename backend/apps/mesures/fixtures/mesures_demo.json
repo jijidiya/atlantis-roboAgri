@@ -1,0 +1,6 @@
+[
+  {"model": "mesures.mesure", "pk": 1, "fields": {"zone": 1, "mission": 1, "sequence": 1, "humidite": 62.0, "mesuree_le": "2026-11-02T07:05:00Z", "valide": true, "motif_invalidite": ""}},
+  {"model": "mesures.mesure", "pk": 2, "fields": {"zone": 2, "mission": 1, "sequence": 2, "humidite": 33.5, "mesuree_le": "2026-11-02T07:12:00Z", "valide": true, "motif_invalidite": ""}},
+  {"model": "mesures.mesure", "pk": 3, "fields": {"zone": 1, "mission": 2, "sequence": 1, "humidite": 58.0, "mesuree_le": "2026-11-03T07:05:00Z", "valide": true, "motif_invalidite": ""}},
+  {"model": "mesures.mesure", "pk": 4, "fields": {"zone": 3, "mission": 2, "sequence": 2, "humidite": 130.0, "mesuree_le": "2026-11-03T07:10:00Z", "valide": false, "motif_invalidite": "hors_plage"}}
+]
