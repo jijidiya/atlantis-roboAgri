@@ -1,0 +1,26 @@
+# Base PostgreSQL + TimescaleDB pour le développement.
+# Les identifiants viennent du fichier .env (voir .env.example).
+services:
+  db:
+    image: timescale/timescaledb:latest-pg16
+    container_name: roboagri-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      # Volume persistant : les données survivent à "docker compose down".
+      - donnees_db:/var/lib/postgresql/data
+      # Scripts exécutés UNE seule fois, à la création de la base.
+      - ./docker/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d \"${DB_NAME}\""]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  donnees_db:
