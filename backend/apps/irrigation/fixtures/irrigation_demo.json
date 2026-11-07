@@ -1,0 +1,8 @@
+[
+  {"model": "irrigation.irrigation", "pk": 1, "fields": {"zone": 1, "mesure": 1, "type": "recommandation", "decision": "suffisante", "declenchee_le": "2026-11-02T07:05:01Z", "duree_secondes": null, "volume_litres": null}},
+  {"model": "irrigation.irrigation", "pk": 2, "fields": {"zone": 2, "mesure": 2, "type": "recommandation", "decision": "insuffisante", "declenchee_le": "2026-11-02T07:12:01Z", "duree_secondes": null, "volume_litres": null}},
+  {"model": "irrigation.irrigation", "pk": 3, "fields": {"zone": 2, "mesure": 2, "type": "intervention", "decision": "insuffisante", "declenchee_le": "2026-11-02T07:13:00Z", "duree_secondes": 30, "volume_litres": 4.5}},
+  {"model": "irrigation.irrigation", "pk": 4, "fields": {"zone": 3, "mesure": 4, "type": "recommandation", "decision": "invalide", "declenchee_le": "2026-11-03T07:10:01Z", "duree_secondes": null, "volume_litres": null}},
+
+  {"model": "irrigation.incident", "pk": 1, "fields": {"zone": 3, "mission": 2, "type": "mesure_invalide", "description": "hors_plage", "cree_le": "2026-11-03T07:10:01Z"}}
+]
