@@ -4,29 +4,42 @@ import pandas as pd
 from django.db.models import Count
 
 from apps.irrigation.models import Incident, Irrigation
-from apps.mesures.models import Mesure
+from apps.mesures.models import MesureHumidite
 from apps.missions.models import Mission
 
 
-def evolution_humidite(zone_id):
-    lignes = Mesure.objects.filter(zone_id=zone_id, valide=True).values("mesuree_le", "humidite")
-    df = pd.DataFrame(list(lignes))
-    if df.empty:
+def obtenir_evolution_humidite(zone_id):
+    """Retourne l'humidité moyenne par jour d'une zone (mesures valides).
+
+    Returns:
+        Une liste de dictionnaires {"jour", "humidite_pourcent"}, vide sans mesure.
+    """
+    lignes = MesureHumidite.objects.filter(zone_id=zone_id, est_valide=True).values(
+        "date_mesure", "humidite_pourcent"
+    )
+    tableau = pd.DataFrame(list(lignes))
+    if tableau.empty:
         return []
-    df["jour"] = pd.to_datetime(df["mesuree_le"]).dt.date.astype(str)
-    return df.groupby("jour")["humidite"].mean().round(1).reset_index().to_dict("records")
+    tableau["jour"] = pd.to_datetime(tableau["date_mesure"]).dt.date.astype(str)
+    moyennes = tableau.groupby("jour")["humidite_pourcent"].mean().round(1)
+    return moyennes.reset_index().to_dict("records")
 
 
-def recapitulatif_missions():
-    return list(Mission.objects.values("statut").annotate(total=Count("id")).order_by("statut"))
+def obtenir_recapitulatif_missions():
+    """Retourne le nombre de missions par statut."""
+    return list(
+        Mission.objects.values("statut").annotate(total=Count("id")).order_by("statut")
+    )
 
 
-def resume_global():
+def obtenir_resume_global():
+    """Retourne les indicateurs d'ensemble du système."""
+    volumes = Irrigation.objects.exclude(volume_litres=None).values_list(
+        "volume_litres", flat=True
+    )
     return {
-        "missions": recapitulatif_missions(),
+        "missions": obtenir_recapitulatif_missions(),
         "incidents": Incident.objects.count(),
         "irrigations": Irrigation.objects.count(),
-        "volume_litres": sum(
-            Irrigation.objects.exclude(volume_litres=None).values_list("volume_litres", flat=True)
-        ),
+        "volume_litres": sum(volumes),
     }

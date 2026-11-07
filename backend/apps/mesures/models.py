@@ -1,31 +1,49 @@
+"""Modèle des mesures d'humidité du sol."""
+
 from django.db import models
 
 from apps.missions.models import Mission
 from apps.parcelles.models import Zone
 
 
-class Mesure(models.Model):
+class MesureHumidite(models.Model):
+    """Mesure d'humidité du sol faite par le robot dans une zone.
+
+    `humidite_pourcent` est la valeur étalonnée, utilisée par la règle d'irrigation.
+    `valeur_brute` est la lecture du capteur, pour le diagnostic seulement.
+    """
+
     zone = models.ForeignKey(Zone, on_delete=models.PROTECT, related_name="mesures")
     mission = models.ForeignKey(
-        Mission, null=True, blank=True, on_delete=models.SET_NULL, related_name="mesures"
+        Mission, on_delete=models.PROTECT, related_name="mesures"
     )
-    sequence = models.PositiveIntegerField()
-    humidite = models.FloatField(null=True, blank=True, help_text="Pourcentage 0-100")
-    mesuree_le = models.DateTimeField()
-    valide = models.BooleanField(default=True)
-    motif_invalidite = models.CharField(max_length=100, blank=True)
+    num_sequence = models.PositiveIntegerField()
+    humidite_pourcent = models.FloatField(null=True, blank=True)
+    valeur_brute = models.IntegerField()
+    est_valide = models.BooleanField(default=True)
+    motif_invalidite = models.CharField(max_length=50, blank=True)
+    date_mesure = models.DateTimeField()
+    est_date_approximative = models.BooleanField(
+        default=False,
+        help_text="Vrai si le robot n'avait pas d'heure : date de réception utilisée.",
+    )
+    uptime_ms = models.BigIntegerField(null=True, blank=True)
 
     class Meta:
-        ordering = ["-mesuree_le"]
+        ordering = ["-date_mesure"]
+        verbose_name = "mesure d'humidité"
+        verbose_name_plural = "mesures d'humidité"
+        indexes = [models.Index(fields=["zone", "-date_mesure"])]
         constraints = [
-            models.UniqueConstraint(
-                fields=["mission", "sequence", "zone"], name="mesure_unique_par_mission_zone"
-            ),
-            # Sans mission, NULL n'est jamais égal à NULL : contrainte dédiée.
-            models.UniqueConstraint(
-                fields=["sequence", "zone"],
-                condition=models.Q(mission__isnull=True),
-                name="mesure_unique_sans_mission",
+            models.CheckConstraint(
+                condition=models.Q(humidite_pourcent__isnull=True)
+                | models.Q(humidite_pourcent__gte=0, humidite_pourcent__lte=100),
+                name="mesure_humidite_entre_0_et_100",
             ),
         ]
-        indexes = [models.Index(fields=["zone", "-mesuree_le"])]
+
+    def __str__(self):
+        valeur = (
+            "invalide" if self.humidite_pourcent is None else self.humidite_pourcent
+        )
+        return f"{self.zone} : {valeur} ({self.date_mesure:%d/%m/%Y %H:%M})"

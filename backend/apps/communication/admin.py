@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import MessageRecu
+from .models import EtatRobot, MessageRecu
 
-admin.site.register(MessageRecu)
+admin.site.register([MessageRecu, EtatRobot])

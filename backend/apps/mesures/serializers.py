@@ -1,13 +1,25 @@
+"""Format JSON des mesures d'humidité."""
+
 from rest_framework import serializers
 
-from .models import Mesure
+from .models import MesureHumidite
 
 
-class MesureSerializer(serializers.ModelSerializer):
+class MesureHumiditeSerializer(serializers.ModelSerializer):
+    """Mesure d'humidité (lecture seule)."""
+
     class Meta:
-        model = Mesure
+        model = MesureHumidite
         fields = [
-            "id", "zone", "mission", "sequence", "humidite",
-            "mesuree_le", "valide", "motif_invalidite",
+            "id",
+            "zone",
+            "mission",
+            "num_sequence",
+            "humidite_pourcent",
+            "valeur_brute",
+            "est_valide",
+            "motif_invalidite",
+            "date_mesure",
+            "est_date_approximative",
+            "uptime_ms",
         ]
-        read_only_fields = ["valide", "motif_invalidite"]

@@ -1,0 +1,16 @@
+[tool.black]
+line-length = 88
+extend-exclude = "migrations"
+
+[tool.ruff]
+line-length = 88
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N"]
+# Noms métier en français (MessageInvalide, ErreurMetier) : pas de suffixe Error.
+ignore = ["N818"]
+
+[tool.ruff.lint.per-file-ignores]
+# Les réglages dev et test étendent base.py : l'import étoile y est voulu.
+"config/settings/*.py" = ["F403", "F405"]

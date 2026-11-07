@@ -1,8 +1,9 @@
 [
-  {"model": "irrigation.irrigation", "pk": 1, "fields": {"zone": 1, "mesure": 1, "type": "recommandation", "decision": "suffisante", "declenchee_le": "2026-11-02T07:05:01Z", "duree_secondes": null, "volume_litres": null}},
-  {"model": "irrigation.irrigation", "pk": 2, "fields": {"zone": 2, "mesure": 2, "type": "recommandation", "decision": "insuffisante", "declenchee_le": "2026-11-02T07:12:01Z", "duree_secondes": null, "volume_litres": null}},
-  {"model": "irrigation.irrigation", "pk": 3, "fields": {"zone": 2, "mesure": 2, "type": "intervention", "decision": "insuffisante", "declenchee_le": "2026-11-02T07:13:00Z", "duree_secondes": 30, "volume_litres": 4.5}},
-  {"model": "irrigation.irrigation", "pk": 4, "fields": {"zone": 3, "mesure": 4, "type": "recommandation", "decision": "invalide", "declenchee_le": "2026-11-03T07:10:01Z", "duree_secondes": null, "volume_litres": null}},
+  {"model": "irrigation.irrigation", "pk": 1, "fields": {"zone": 1, "mesure": 1, "type": "recommandation", "decision": "suffisante", "date_declenchement": "2026-11-02T07:01:15Z", "duree_secondes": null, "volume_litres": null}},
+  {"model": "irrigation.irrigation", "pk": 2, "fields": {"zone": 2, "mesure": 2, "type": "recommandation", "decision": "insuffisante", "date_declenchement": "2026-11-02T07:05:21Z", "duree_secondes": null, "volume_litres": null}},
+  {"model": "irrigation.irrigation", "pk": 3, "fields": {"zone": 2, "mesure": 2, "type": "intervention", "decision": "insuffisante", "date_declenchement": "2026-11-02T07:05:40Z", "duree_secondes": 30, "volume_litres": 4.5}},
+  {"model": "irrigation.irrigation", "pk": 4, "fields": {"zone": 3, "mesure": 4, "type": "recommandation", "decision": "invalide", "date_declenchement": "2026-11-03T07:03:31Z", "duree_secondes": null, "volume_litres": null}},
 
-  {"model": "irrigation.incident", "pk": 1, "fields": {"zone": 3, "mission": 2, "type": "mesure_invalide", "description": "hors_plage", "cree_le": "2026-11-03T07:10:01Z"}}
+  {"model": "irrigation.incident", "pk": 1, "fields": {"code": "CAPTEUR_INVALIDE", "gravite": "avertissement", "description": "capteur_invalide", "zone": 3, "mission": 2, "nb_perdus": null, "date_incident": "2026-11-03T07:03:30Z", "date_creation": "2026-11-03T07:03:31Z"}},
+  {"model": "irrigation.incident", "pk": 2, "fields": {"code": "MISSION_NON_CONFIRMEE", "gravite": "avertissement", "description": "cause : silence", "zone": null, "mission": 2, "nb_perdus": null, "date_incident": "2026-11-03T07:10:00Z", "date_creation": "2026-11-03T07:10:00Z"}}
 ]

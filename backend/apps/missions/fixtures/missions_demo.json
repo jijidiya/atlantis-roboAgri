@@ -1,7 +1,7 @@
 [
-  {"model": "missions.mission", "pk": 1, "fields": {"statut": "terminee", "prevue_le": "2026-11-02T07:00:00Z", "debutee_le": "2026-11-02T07:02:00Z", "terminee_le": "2026-11-02T07:20:00Z", "cree_le": "2026-11-01T18:00:00Z"}},
-  {"model": "missions.mission", "pk": 2, "fields": {"statut": "interrompue", "prevue_le": "2026-11-03T07:00:00Z", "debutee_le": "2026-11-03T07:01:00Z", "terminee_le": null, "cree_le": "2026-11-02T18:00:00Z"}},
-  {"model": "missions.mission", "pk": 3, "fields": {"statut": "planifiee", "prevue_le": "2026-11-05T07:00:00Z", "debutee_le": null, "terminee_le": null, "cree_le": "2026-11-04T18:00:00Z"}},
+  {"model": "missions.mission", "pk": 1, "fields": {"statut": "terminee", "duree_prevue_secondes": 600, "date_creation": "2026-11-01T18:00:00Z", "date_recue": "2026-11-02T07:00:04Z", "date_debut": "2026-11-02T07:01:10Z", "date_fin": "2026-11-02T07:08:40Z"}},
+  {"model": "missions.mission", "pk": 2, "fields": {"statut": "non_confirmee", "duree_prevue_secondes": 600, "date_creation": "2026-11-02T18:00:00Z", "date_recue": "2026-11-03T07:00:04Z", "date_debut": "2026-11-03T07:01:10Z", "date_fin": null}},
+  {"model": "missions.mission", "pk": 3, "fields": {"statut": "en_attente", "duree_prevue_secondes": 900, "date_creation": "2026-11-04T18:00:00Z", "date_recue": null, "date_debut": null, "date_fin": null}},
 
   {"model": "missions.etapemission", "pk": 1, "fields": {"mission": 1, "zone": 1, "ordre": 1}},
   {"model": "missions.etapemission", "pk": 2, "fields": {"mission": 1, "zone": 2, "ordre": 2}},

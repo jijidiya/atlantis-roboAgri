@@ -15,7 +15,7 @@ def test_decision_invalide():
 
 
 def test_securite_autorise():
-    assert securite.verifier(True, False, 80).autorise
+    assert securite.verifier(True, False, 80).est_autorise
 
 
 def test_securite_refuse():

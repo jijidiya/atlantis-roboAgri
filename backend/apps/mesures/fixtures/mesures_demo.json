@@ -1,6 +1,6 @@
 [
-  {"model": "mesures.mesure", "pk": 1, "fields": {"zone": 1, "mission": 1, "sequence": 1, "humidite": 62.0, "mesuree_le": "2026-11-02T07:05:00Z", "valide": true, "motif_invalidite": ""}},
-  {"model": "mesures.mesure", "pk": 2, "fields": {"zone": 2, "mission": 1, "sequence": 2, "humidite": 33.5, "mesuree_le": "2026-11-02T07:12:00Z", "valide": true, "motif_invalidite": ""}},
-  {"model": "mesures.mesure", "pk": 3, "fields": {"zone": 1, "mission": 2, "sequence": 1, "humidite": 58.0, "mesuree_le": "2026-11-03T07:05:00Z", "valide": true, "motif_invalidite": ""}},
-  {"model": "mesures.mesure", "pk": 4, "fields": {"zone": 3, "mission": 2, "sequence": 2, "humidite": 130.0, "mesuree_le": "2026-11-03T07:10:00Z", "valide": false, "motif_invalidite": "hors_plage"}}
+  {"model": "mesures.mesurehumidite", "pk": 1, "fields": {"zone": 1, "mission": 1, "num_sequence": 3, "humidite_pourcent": 62.0, "valeur_brute": 1800, "est_valide": true, "motif_invalidite": "", "date_mesure": "2026-11-02T07:01:14Z", "est_date_approximative": false, "uptime_ms": 254800}},
+  {"model": "mesures.mesurehumidite", "pk": 2, "fields": {"zone": 2, "mission": 1, "num_sequence": 5, "humidite_pourcent": 33.5, "valeur_brute": 2310, "est_valide": true, "motif_invalidite": "", "date_mesure": "2026-11-02T07:05:20Z", "est_date_approximative": false, "uptime_ms": 410200}},
+  {"model": "mesures.mesurehumidite", "pk": 3, "fields": {"zone": 1, "mission": 2, "num_sequence": 11, "humidite_pourcent": 58.0, "valeur_brute": 1850, "est_valide": true, "motif_invalidite": "", "date_mesure": "2026-11-03T07:01:14Z", "est_date_approximative": false, "uptime_ms": 254900}},
+  {"model": "mesures.mesurehumidite", "pk": 4, "fields": {"zone": 3, "mission": 2, "num_sequence": 13, "humidite_pourcent": null, "valeur_brute": 0, "est_valide": false, "motif_invalidite": "capteur_invalide", "date_mesure": "2026-11-03T07:03:30Z", "est_date_approximative": false, "uptime_ms": 390000}}
 ]

@@ -77,6 +77,24 @@ python manage.py runserver
 
 Si `migrate` réussit, le projet est bien connecté à la base.
 
+## 4 bis. Jeton du robot
+
+Le robot s'authentifie avec un jeton (`Authorization: Token <jeton>`, docs/protocole.md).
+
+```bash
+python manage.py createsuperuser
+python manage.py drf_create_token <nom_utilisateur>
+```
+
+Points d'entrée du robot : `GET /api/robot/mission`, `POST /api/robot/messages`,
+`POST /api/robot/messages/sync`, `POST /api/robot/etat`.
+
+Détection des missions non confirmées (à lancer toutes les 3 s en production) :
+
+```bash
+python manage.py detecter_missions_non_confirmees
+```
+
 ## 5. Tests
 
 ```bash
@@ -88,6 +106,13 @@ PostgreSQL (le rôle doit pouvoir créer des bases) :
 
 ```bash
 python -m pytest --ds=config.settings.dev
+```
+
+### Style du code
+
+```bash
+black .
+ruff check .
 ```
 
 ## Problèmes fréquents sous Windows
@@ -110,7 +135,3 @@ python -m pytest --ds=config.settings.dev
 
 Voir `architecture.pdf` : une application Django par module (`parcelles`, `missions`,
 `mesures`, `irrigation`, `dashboard`, `communication`), dépendances uniquement vers le bas.
-
-## NB .
-
-Si un problème se présente et persistes essayez de demander à Claude ou ChatGPT de vous guider car les problèmes peuvent varié d'un PC à l'autre en fonctions des configurations et tout les cas existant ne sont pas forcément spécifiés dans le README.md.

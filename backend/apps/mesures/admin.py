@@ -1,5 +1,7 @@
+"""Administration des mesures."""
+
 from django.contrib import admin
 
-from .models import Mesure
+from .models import MesureHumidite
 
-admin.site.register(Mesure)
+admin.site.register(MesureHumidite)

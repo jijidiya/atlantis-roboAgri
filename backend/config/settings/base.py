@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "django_filters",
     # Applications du projet, dans l'ordre des dépendances
     "apps.core",
@@ -81,7 +82,16 @@ USE_TZ = True
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Règle des missions non confirmées (docs/protocole.md, section 6.6).
+ROBOT_DUREE_CYCLE_SECONDES = 3
+ROBOT_CYCLES_SILENCE = 10
+ROBOT_FACTEUR_PLAFOND = 3
+
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
     "DEFAULT_PAGINATION_CLASS": "apps.core.permissions.PaginationStandard",
     "DEFAULT_PERMISSION_CLASSES": ["apps.core.permissions.EstAuthentifie"],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],

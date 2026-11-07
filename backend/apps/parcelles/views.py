@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 
-from .models import Culture, Cultiver, Parcelle, Zone
+from .models import Cultiver, Culture, Parcelle, Zone
 from .serializers import (
     CultiverSerializer,
     CultureSerializer,

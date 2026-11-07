@@ -2,12 +2,12 @@
 
 
 class ErreurMetier(Exception):
-    """Erreur de règle métier (convertie en réponse 400/409 par l'API)."""
+    """Erreur de règle métier, convertie en réponse 400 par l'API."""
 
 
 class TransitionInterdite(ErreurMetier):
-    """Changement d'état de mission non autorisé (section 8.4)."""
+    """Changement de statut de mission non autorisé."""
 
 
 class DonneesInvalides(ErreurMetier):
-    """Message ou valeur qui ne respecte pas le protocole."""
+    """Valeur qui ne respecte pas une règle métier."""
