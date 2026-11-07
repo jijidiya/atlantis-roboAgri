@@ -1,0 +1,16 @@
+[
+  {"model": "parcelles.parcelle", "pk": 1, "fields": {"nom": "Parcelle Nord", "localisation": "Kinshasa, site expérimental", "superficie_m2": "400.00", "cree_le": "2026-10-01T08:00:00Z"}},
+  {"model": "parcelles.parcelle", "pk": 2, "fields": {"nom": "Parcelle Sud", "localisation": "Kinshasa, site expérimental", "superficie_m2": "250.00", "cree_le": "2026-10-01T08:05:00Z"}},
+
+  {"model": "parcelles.zone", "pk": 1, "fields": {"parcelle": 1, "nom": "Zone 1", "ordre": 1, "seuil_humidite": 40}},
+  {"model": "parcelles.zone", "pk": 2, "fields": {"parcelle": 1, "nom": "Zone 2", "ordre": 2, "seuil_humidite": 45}},
+  {"model": "parcelles.zone", "pk": 3, "fields": {"parcelle": 2, "nom": "Zone 1", "ordre": 1, "seuil_humidite": 35}},
+
+  {"model": "parcelles.culture", "pk": 1, "fields": {"nom": "Tomate"}},
+  {"model": "parcelles.culture", "pk": 2, "fields": {"nom": "Amarante"}},
+  {"model": "parcelles.culture", "pk": 3, "fields": {"nom": "Manioc"}},
+
+  {"model": "parcelles.cultiver", "pk": 1, "fields": {"zone": 1, "culture": 1, "date_debut": "2026-09-15", "date_fin": null}},
+  {"model": "parcelles.cultiver", "pk": 2, "fields": {"zone": 2, "culture": 2, "date_debut": "2026-09-20", "date_fin": null}},
+  {"model": "parcelles.cultiver", "pk": 3, "fields": {"zone": 3, "culture": 3, "date_debut": "2026-09-01", "date_fin": null}}
+]
