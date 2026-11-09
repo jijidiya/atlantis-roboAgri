@@ -8,8 +8,9 @@ environ.Env.read_env(BASE_DIR / '.env')
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+AUTH_USER_MODEL = "utilisateurs.Utilisateur"
 
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -20,6 +21,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "rest_framework",
+    "corsheaders",
+    "apps.core",
+    "apps.utilisateurs",
+    "apps.parcelles",
+    "apps.missions",
+    "apps.communication",
+    "apps.mesures",
+    "apps.analyse",
+    "apps.incidents",
+    "apps.irrigation",
+    "apps.dashboard",
 ]
 
 MIDDLEWARE = [
