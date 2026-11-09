@@ -93,6 +93,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    # Temporaire pour débloquer le frontend. À remplacer par l'authentification
+    # (IsAuthenticated) mardi : une API ouverte n'est pas acceptable !!
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
