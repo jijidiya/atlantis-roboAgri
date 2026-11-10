@@ -16,11 +16,11 @@ const styles = {
   'Sol sec': 'badge-orange',
 
   'Administrateur': 'badge-vert',
-  'Opérateur': 'badge-bleu',
+  'Propriétaire': 'badge-bleu',
 }
 
 function StatusBadge({ statut }) {
-  return <span className={`badge ${styles[statut]}`}>{statut}</span>
+ return <span className={`badge ${styles[statut] || 'badge-bleu'}`}>{statut}</span>
 }
 
 export default StatusBadge

@@ -6,7 +6,7 @@ const onglets = ['Mon compte', 'Robot et connexion', 'Équipe et accès']
 
 const equipe = [
   { nom: 'Magnificat Kakanda', email: 'magnificat@exemple.cd', role: 'Administrateur' },
-  { nom: 'Jeanine Makunga', email: 'jeanine.makunga@fermedensele.cd', role: 'Opérateur' },
+  { nom: 'Jeanine Makunga', email: 'jeanine.makunga@fermedensele.cd', role: 'Propriétaire' },
 ]
 
 function Parametres() {

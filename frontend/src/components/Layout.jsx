@@ -3,11 +3,6 @@ import {
   LayoutDashboard, Map as MapIcon, Layers, Route as RouteIcon, Radio,
   Droplets, TriangleAlert, History, ChartColumn, Settings,
   Bell, BatteryMedium, Sprout,
-  LogOut,
-  MoonIcon,
-  Margin,
-  Settings2,
-  Settings2Icon,
 } from 'lucide-react'
 
 const liens = [
@@ -26,24 +21,26 @@ const liens = [
 function Layout() {
   return (
     <div className="layout">
-      <aside className="sidebar">
-        <div className="logo">
-          <Sprout size={24} />
-          <div>
-            <strong>RoboAgri-Kin</strong>
-            <small>CULTIVER AVEC PRÉCISION</small>
+      <div className="sidebar-place">
+        <aside className="sidebar">
+          <div className="logo">
+            <Sprout size={24} />
+            <div className="texte-menu">
+              <strong>RoboAgri-Kin</strong>
+              <small>CULTIVER AVEC PRÉCISION</small>
+            </div>
           </div>
-        </div>
 
-        <nav>
-          {liens.map(({ chemin, nom, icone: Icone }) => (
-            <NavLink key={chemin} to={chemin} end={chemin === '/'}>
-              <Icone size={18} />
-              {nom}
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
+          <nav>
+            {liens.map(({ chemin, nom, icone: Icone }) => (
+              <NavLink key={chemin} to={chemin} end={chemin === '/'}>
+                <Icone size={18} />
+                <span className="texte-menu">{nom}</span>
+              </NavLink>
+            ))}
+          </nav>
+        </aside>
+      </div>
 
       <div className="principal">
         <header className="entete">
