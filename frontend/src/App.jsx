@@ -1,12 +1,11 @@
-import '@fontsource/inter/400.css'
-import '@fontsource/inter/600.css'
-import '@fontsource/inter/700.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
-import TableauDeBord from './pages/TableauDeBord'
-import Missions from './pages/Missions'
+import Dashboard from './pages/Dashboard'
+import Connexion from './pages/Connexion'
+import Carte from './pages/Carte'
 import Parcelles from './pages/Parcelles'
-import PageVide from './pages/PageVide'
+import Capteurs from './pages/Capteurs'
+import Missions from './pages/Missions'
 import Irrigation from './pages/Irrigation'
 import Incidents from './pages/Incidents'
 import Historique from './pages/Historique'
@@ -16,22 +15,21 @@ import './App.css'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<TableauDeBord />} />
-          <Route path="/missions" element={<Missions />} />
-          <Route path="/parcelles" element={<Parcelles />} />
-          <Route path="/carte" element={<PageVide titre="Carte des parcelles" />} />
-          <Route path="/capteurs" element={<PageVide titre="Capteurs" />} />
-           <Route path="/irrigation" element={<Irrigation titre="Irrigation" />} />
-           <Route path="/incidents" element={<Incidents titre="Incidents" />} />
-           <Route path="/historique" element={<Historique titre="Historique" />} />
-           <Route path="/rapports" element={<Rapports titre="Rapports" />} />
-           <Route path="/parametres" element={<Parametres />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/connexion" element={<Connexion />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/carte" element={<Carte />} />
+        <Route path="/parcelles" element={<Parcelles />} />
+        <Route path="/missions" element={<Missions />} />
+        <Route path="/capteurs" element={<Capteurs />} />
+        <Route path="/irrigation" element={<Irrigation />} />
+        <Route path="/incidents" element={<Incidents />} />
+        <Route path="/historique" element={<Historique />} />
+        <Route path="/rapports" element={<Rapports />} />
+        <Route path="/parametres" element={<Parametres />} />
+      </Route>
+    </Routes>
   )
 }
 

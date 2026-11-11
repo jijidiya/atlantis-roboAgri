@@ -1,0 +1,258 @@
+/* ===== PAGE DE CONNEXION ROBOAGRI-KIN ===== */
+
+* {
+  box-sizing: border-box;
+}
+
+.connexion {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Inter', Arial, sans-serif;
+  background: #ffffff;
+  color: #1e293b;
+}
+
+/* ===== PARTIE GAUCHE : VISUEL ===== */
+
+.connexion-visuel {
+  min-height: 100vh;
+  padding: 30px 7%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: white;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 45, 30, 0.25),
+      rgba(8, 35, 22, 0.85)
+    ),
+    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200')
+    center / cover no-repeat;
+}
+
+.connexion-marque {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.connexion-visuel h2 {
+  max-width: 480px;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.2;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+.connexion-visuel p {
+  max-width: 440px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #e2e8f0;
+  margin-bottom: 35px;
+}
+
+.connexion-chiffres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.connexion-chiffres span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  color: #e2e8f0;
+}
+
+.connexion-chiffres strong {
+  font-size: 23px;
+  color: white;
+}
+
+/* ===== PARTIE DROITE : FORMULAIRE ===== */
+
+.connexion-formulaire {
+  min-height: 100vh;
+  padding: 50px 12%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.connexion-formulaire form {
+  width: 100%;
+  max-width: 440px;
+}
+
+.connexion-formulaire h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 10px;
+}
+
+.sous-titre {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 35px;
+}
+
+/* ===== CHAMPS ===== */
+
+.champ {
+  display: block;
+  margin-bottom: 22px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.champ input {
+  width: 100%;
+  height: 45px;
+  margin-top: 9px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  font-size: 13px;
+  color: #1e293b;
+  background: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.champ input:focus {
+  border-color: #176b45;
+  box-shadow: 0 0 0 3px rgba(23, 107, 69, 0.10);
+}
+
+/* ===== MOT DE PASSE ===== */
+
+.champ-mdp {
+  position: relative;
+}
+
+.champ-mdp input {
+  padding-right: 90px;
+}
+
+.champ-mdp button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-30%);
+  border: none;
+  background: transparent;
+  color: #176b45;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ===== OPTIONS ===== */
+
+.ligne-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 0 25px;
+  font-size: 12px;
+}
+
+.ligne-options label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #475569;
+}
+
+.ligne-options input {
+  accent-color: #176b45;
+}
+
+.ligne-options a {
+  color: #176b45;
+  text-decoration: none;
+}
+
+.ligne-options a:hover {
+  text-decoration: underline;
+}
+
+/* ===== BOUTON ===== */
+
+.bouton {
+  background: #176b45;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.bouton:hover {
+  background: #105638;
+  transform: translateY(-1px);
+}
+
+.bouton.large {
+  width: 100%;
+  min-height: 45px;
+}
+
+/* ===== ERREUR ===== */
+
+.erreur {
+  color: #dc2626;
+  background: #fef2f2;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 850px) {
+  .connexion {
+    grid-template-columns: 1fr;
+  }
+
+  .connexion-visuel {
+    min-height: 350px;
+    padding: 25px;
+  }
+
+  .connexion-formulaire {
+    min-height: auto;
+    padding: 55px 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .connexion-visuel h2 {
+    font-size: 27px;
+  }
+
+  .connexion-chiffres {
+    gap: 18px;
+  }
+
+  .connexion-formulaire h1 {
+    font-size: 25px;
+  }
+
+  .ligne-options {
+    flex-wrap: wrap;
+  }
+}
