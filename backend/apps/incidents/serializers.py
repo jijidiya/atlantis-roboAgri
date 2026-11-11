@@ -12,3 +12,4 @@ class IncidentSerializer(serializers.ModelSerializer):
         model = Incident
         fields = ["incident_id", "type_incident", "date_incident", "mission", "mesures"]
         read_only_fields = fields
+#Sabin est passé par là
