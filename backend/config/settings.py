@@ -10,7 +10,7 @@ DEBUG = env("DEBUG", default=False)
 
 AUTH_USER_MODEL = "utilisateurs.Utilisateur"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS =env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
 # Application definition
 
@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "rest_framework_simplejwt",
     "rest_framework",
     "corsheaders",
     "apps.core",
@@ -35,7 +36,13 @@ INSTALLED_APPS = [
     "apps.dashboard",
 ]
 
+SIMPLE_JWT = {
+    "USER_ID_FIELD": "utilisateur_id",
+    "USER_ID_CLAIM": "user_id",
+}
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -94,10 +101,16 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 REST_FRAMEWORK = {
-    # Temporaire pour débloquer le frontend. À remplacer par l'authentification
-    # (IsAuthenticated) mardi : une API ouverte n'est pas acceptable !!
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework_simplejwt.authentication.JWTAuthentication",],
+    "EXCEPTION_HANDLER": "apps.core.exceptions.gestionnaire_exceptions",
 }
+
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=["http://localhost:5173"])
+
+CLE_ROBOT = env("CLE_ROBOT", default="")   # vide = tous les appels du robot sont refusés
+
+DUREE_MAX_IRRIGATION_SECONDES = env.int("DUREE_MAX_IRRIGATION_SECONDES", default=300)  # RG18
+AGE_MAX_MESURE_SECONDES = env.int("AGE_MAX_MESURE_SECONDES", default=1800)
 
 
 # Internationalization
