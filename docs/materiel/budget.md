@@ -1,7 +1,7 @@
 # Suivi des dépenses — RoboAgri-Kin « Atlantis »
 
 Projet de Programmation III · L3 Sciences Informatiques · Université Catholique du Congo
-Dernière mise à jour : 28/10/2026
+Dernière mise à jour : 09/11/2026
 
 ## Règles de suivi
 
@@ -15,18 +15,32 @@ Dernière mise à jour : 28/10/2026
 
 | Date | Montant (USD) | Achat | Validé par |
 |---|---|---|---|
-| JJ/MM/AAAA | 0.00 | Exemple : carte ESP32 DevKit ×1 (à supprimer) | Nom |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| 03/11/2026 | 30.00 | Carte ESP32 DevKit ×2 | Binôme A |
+| 03/11/2026 | 20.00 | Kit châssis 2 roues (2WD) | Binôme A |
+| 03/11/2026 | 15.00 | Module L298N ×2 | Binôme A |
+| 03/11/2026 | 10.00 | Capteur HC-SR04 x2 | Binôme A |
+| 03/11/2026 | 10.00 | Capteur d'humidité résistif x2 | Binôme A |
+| 03/11/2026 | 5.00 | Servomoteur SG90 x2 | Binôme A |
+| 03/11/2026 | 3.50 | Alimentation & Interrupteur | Binôme A |
+| 03/11/2026 | 5.00 | Breadboard 830 points | Binôme A |
+| 03/11/2026 | 5.00 | Lot de résistance | Binôme A |
+| 03/11/2026 | 5.00 | Fils Dupont (M-M, M-F) | Binôme A |
+| 07/11/2026 | 1.74 | Condensateurs 1000uF x2 | Binôme A |
+| 07/11/2026 | 2.60 | Li-ion 18650 x2 | Binôme A |
+| 07/11/2026 | 2.17 | Câble USB type C | Binôme A |
+| 07/11/2026 | 8.00 | Fils Dupont (F-F) | Binôme A |
+| 07/11/2026 | 4.00 | Slot holder | Binôme A |
+| 09/11/2026 | 3.39 | Slot holder | Binôme A |
+
 
 ## 2. Récapitulatif
 
 | Élément | Montant (USD) |
 |---|---|
-| Total dépensé | ____ |
+Frais de transport | 7.47 |
+| Total dépensé | 134,41 |
 | Budget indicatif du prototype | 200  |
-| Reste disponible | ____ |
+| Reste disponible | 65,59 |
 
 ## 3. Répartition par poste
 
