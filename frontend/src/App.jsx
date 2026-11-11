@@ -7,6 +7,7 @@ import Parcelles from './pages/Parcelles.jsx'
 import Capteurs from './pages/Capteurs.jsx'
 
 const pages = [
+  { path: '/accueil', titre: 'Accueil', element: <Connexion /> },
   { path: '/', titre: 'Tableau de bord', element: <Dashboard /> },
   { path: '/carte', titre: 'Carte des parcelles', element: <Carte /> },
   { path: '/parcelles', titre: 'Gestion des parcelles', element: <Parcelles /> },
