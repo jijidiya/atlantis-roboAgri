@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import RouteProtegee from './components/RouteProtegee'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import Connexion from './pages/Connexion'
@@ -17,17 +18,20 @@ function App() {
   return (
     <Routes>
       <Route path="/connexion" element={<Connexion />} />
-      <Route element={<Layout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/carte" element={<Carte />} />
-        <Route path="/parcelles" element={<Parcelles />} />
-        <Route path="/missions" element={<Missions />} />
-        <Route path="/capteurs" element={<Capteurs />} />
-        <Route path="/irrigation" element={<Irrigation />} />
-        <Route path="/incidents" element={<Incidents />} />
-        <Route path="/historique" element={<Historique />} />
-        <Route path="/rapports" element={<Rapports />} />
-        <Route path="/parametres" element={<Parametres />} />
+
+      <Route element={<RouteProtegee />}>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/carte" element={<Carte />} />
+          <Route path="/parcelles" element={<Parcelles />} />
+          <Route path="/missions" element={<Missions />} />
+          <Route path="/capteurs" element={<Capteurs />} />
+          <Route path="/irrigation" element={<Irrigation />} />
+          <Route path="/incidents" element={<Incidents />} />
+          <Route path="/historique" element={<Historique />} />
+          <Route path="/rapports" element={<Rapports />} />
+          <Route path="/parametres" element={<Parametres />} />
+        </Route>
       </Route>
     </Routes>
   )

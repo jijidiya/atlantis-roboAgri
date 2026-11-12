@@ -1,0 +1,1561 @@
+openapi: 3.0.3
+info:
+  title: API RoboAgri-Kin
+  version: 1.0.0
+paths:
+  /api/v1/auth/connexion/:
+    post:
+      operationId: auth_connexion_create
+      description: POST /auth/connexion/ -> jetons d'accès et de rafraîchissement.
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/moi/:
+    get:
+      operationId: auth_moi_retrieve
+      description: GET /auth/moi/ -> utilisateur connecté et son rôle.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/rafraichir/:
+    post:
+      operationId: auth_rafraichir_create
+      description: POST /auth/rafraichir/ -> nouveau jeton d'accès.
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/cultures/:
+    get:
+      operationId: cultures_list
+      tags:
+      - cultures
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Culture'
+          description: ''
+    post:
+      operationId: cultures_create
+      tags:
+      - cultures
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Culture'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Culture'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Culture'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Culture'
+          description: ''
+  /api/v1/cultures/{culture_id}/:
+    get:
+      operationId: cultures_retrieve
+      parameters:
+      - in: path
+        name: culture_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this culture.
+        required: true
+      tags:
+      - cultures
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Culture'
+          description: ''
+    put:
+      operationId: cultures_update
+      parameters:
+      - in: path
+        name: culture_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this culture.
+        required: true
+      tags:
+      - cultures
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Culture'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Culture'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Culture'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Culture'
+          description: ''
+    patch:
+      operationId: cultures_partial_update
+      parameters:
+      - in: path
+        name: culture_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this culture.
+        required: true
+      tags:
+      - cultures
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCulture'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCulture'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCulture'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Culture'
+          description: ''
+    delete:
+      operationId: cultures_destroy
+      parameters:
+      - in: path
+        name: culture_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this culture.
+        required: true
+      tags:
+      - cultures
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/decisions/:
+    get:
+      operationId: decisions_list
+      description: 'Décisions d''irrigation. Filtres : ?zone=3&statut=recommandee&du=...&au=...'
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - decisions
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDecisionList'
+          description: ''
+  /api/v1/decisions/{id}/:
+    get:
+      operationId: decisions_retrieve
+      description: 'Décisions d''irrigation. Filtres : ?zone=3&statut=recommandee&du=...&au=...'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - decisions
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Decision'
+          description: ''
+  /api/v1/incidents/:
+    get:
+      operationId: incidents_list
+      description: 'Filtres : /api/v1/incidents/?mission=12&type_incident=obstacle&du=2026-11-01&au=2026-11-08'
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - incidents
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedIncidentList'
+          description: ''
+  /api/v1/incidents/{id}/:
+    get:
+      operationId: incidents_retrieve
+      description: 'Filtres : /api/v1/incidents/?mission=12&type_incident=obstacle&du=2026-11-01&au=2026-11-08'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - incidents
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Incident'
+          description: ''
+  /api/v1/irrigations/:
+    get:
+      operationId: irrigations_list
+      description: |-
+        Historique des interventions + saisie d'une intervention manuelle.
+
+        Filtres : /api/v1/irrigations/?zone=3&automatique=false&statut=terminee&du=...&au=...
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - irrigations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedIrrigationList'
+          description: ''
+    post:
+      operationId: irrigations_create
+      description: 'POST /irrigations/ : intervention manuelle (403 ARROSAGE_INTERDIT
+        si refusée).'
+      tags:
+      - irrigations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Irrigation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Irrigation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Irrigation'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Irrigation'
+          description: ''
+  /api/v1/irrigations/{id}/:
+    get:
+      operationId: irrigations_retrieve
+      description: |-
+        Historique des interventions + saisie d'une intervention manuelle.
+
+        Filtres : /api/v1/irrigations/?zone=3&automatique=false&statut=terminee&du=...&au=...
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - irrigations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Irrigation'
+          description: ''
+  /api/v1/irrigations/seuils/:
+    get:
+      operationId: irrigations_seuils_retrieve
+      description: 'GET /irrigations/seuils/ : seuils d''humidité de chaque zone.'
+      tags:
+      - irrigations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Irrigation'
+          description: ''
+  /api/v1/mesures/:
+    get:
+      operationId: mesures_list
+      description: 'Filtres : /api/v1/mesures/?zone=3&mission=12&statut=valide&du=2026-11-01&au=2026-11-08'
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - mesures
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMesureList'
+          description: ''
+  /api/v1/mesures/{id}/:
+    get:
+      operationId: mesures_retrieve
+      description: 'Filtres : /api/v1/mesures/?zone=3&mission=12&statut=valide&du=2026-11-01&au=2026-11-08'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - mesures
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mesure'
+          description: ''
+  /api/v1/missions/:
+    get:
+      operationId: missions_list
+      description: |-
+        Pas de modification ni de suppression libre : le statut change seulement
+        par les actions ci-dessous, pour éviter un état incohérent.
+      tags:
+      - missions
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Mission'
+          description: ''
+    post:
+      operationId: missions_create
+      description: |-
+        Pas de modification ni de suppression libre : le statut change seulement
+        par les actions ci-dessous, pour éviter un état incohérent.
+      tags:
+      - missions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Mission'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+  /api/v1/missions/{id}/:
+    get:
+      operationId: missions_retrieve
+      description: |-
+        Pas de modification ni de suppression libre : le statut change seulement
+        par les actions ci-dessous, pour éviter un état incohérent.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - missions
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+  /api/v1/missions/{id}/demarrer/:
+    post:
+      operationId: missions_demarrer_create
+      description: |-
+        Pas de modification ni de suppression libre : le statut change seulement
+        par les actions ci-dessous, pour éviter un état incohérent.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - missions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Mission'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+  /api/v1/missions/{id}/interrompre/:
+    post:
+      operationId: missions_interrompre_create
+      description: |-
+        Pas de modification ni de suppression libre : le statut change seulement
+        par les actions ci-dessous, pour éviter un état incohérent.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - missions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Mission'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+  /api/v1/missions/{id}/terminer/:
+    post:
+      operationId: missions_terminer_create
+      description: |-
+        Pas de modification ni de suppression libre : le statut change seulement
+        par les actions ci-dessous, pour éviter un état incohérent.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - missions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Mission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Mission'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
+  /api/v1/parcelles/:
+    get:
+      operationId: parcelles_list
+      tags:
+      - parcelles
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parcelle'
+          description: ''
+    post:
+      operationId: parcelles_create
+      tags:
+      - parcelles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parcelle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Parcelle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Parcelle'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parcelle'
+          description: ''
+  /api/v1/parcelles/{parcelle_id}/:
+    get:
+      operationId: parcelles_retrieve
+      parameters:
+      - in: path
+        name: parcelle_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this parcelle.
+        required: true
+      tags:
+      - parcelles
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parcelle'
+          description: ''
+    put:
+      operationId: parcelles_update
+      parameters:
+      - in: path
+        name: parcelle_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this parcelle.
+        required: true
+      tags:
+      - parcelles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Parcelle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Parcelle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Parcelle'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parcelle'
+          description: ''
+    patch:
+      operationId: parcelles_partial_update
+      parameters:
+      - in: path
+        name: parcelle_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this parcelle.
+        required: true
+      tags:
+      - parcelles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedParcelle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedParcelle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedParcelle'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Parcelle'
+          description: ''
+    delete:
+      operationId: parcelles_destroy
+      parameters:
+      - in: path
+        name: parcelle_id
+        schema:
+          type: integer
+        description: A unique integer value identifying this parcelle.
+        required: true
+      tags:
+      - parcelles
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/robot/messages/:
+    post:
+      operationId: robot_messages_create
+      description: |-
+        POST /robot/messages/ : tous les types de messages (mesure, etat, incident).
+
+        201 : message traité. 200 avec "deja_recu": true : message déjà connu.
+        Une mesure invalide donne aussi 201 (avec "valide": false et un incident).
+      tags:
+      - robot
+      responses:
+        '200':
+          description: No response body
+  /api/v1/robot/mission-suivante/:
+    get:
+      operationId: robot_mission_suivante_retrieve
+      description: 'GET /robot/mission-suivante/ : mission à exécuter, ou 204 s''il
+        n''y en a pas.'
+      tags:
+      - robot
+      responses:
+        '200':
+          description: No response body
+  /api/v1/zones/:
+    get:
+      operationId: zones_list
+      tags:
+      - zones
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+          description: ''
+    post:
+      operationId: zones_create
+      tags:
+      - zones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zone'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Zone'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Zone'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+          description: ''
+  /api/v1/zones/{id}/:
+    get:
+      operationId: zones_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - zones
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+          description: ''
+    put:
+      operationId: zones_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - zones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zone'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Zone'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Zone'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+          description: ''
+    patch:
+      operationId: zones_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - zones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedZone'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedZone'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedZone'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+          description: ''
+    delete:
+      operationId: zones_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - zones
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/zones/{zone_id}/decision/:
+    get:
+      operationId: zones_decision_retrieve
+      description: 'GET /zones/{id}/decision/ : décision actuelle d''une zone.'
+      parameters:
+      - in: path
+        name: zone_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - zones
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    Culture:
+      type: object
+      properties:
+        culture_id:
+          type: integer
+          readOnly: true
+        nom:
+          type: string
+          maxLength: 100
+        variete:
+          type: string
+          nullable: true
+          maxLength: 100
+      required:
+      - culture_id
+      - nom
+    Decision:
+      type: object
+      properties:
+        decision_id:
+          type: integer
+          readOnly: true
+        zone:
+          type: integer
+          readOnly: true
+        type_decision:
+          allOf:
+          - $ref: '#/components/schemas/TypeDecisionEnum'
+          readOnly: true
+        action:
+          type: string
+          readOnly: true
+        justification:
+          type: string
+          readOnly: true
+          nullable: true
+        humidite_moyenne:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        seuil_min_applique:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          readOnly: true
+        seuil_max_applique:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          readOnly: true
+        statut:
+          allOf:
+          - $ref: '#/components/schemas/DecisionStatutEnum'
+          readOnly: true
+        date_decision:
+          type: string
+          format: date-time
+          readOnly: true
+        analyse:
+          type: integer
+          readOnly: true
+      required:
+      - action
+      - analyse
+      - date_decision
+      - decision_id
+      - humidite_moyenne
+      - justification
+      - seuil_max_applique
+      - seuil_min_applique
+      - statut
+      - type_decision
+      - zone
+    DecisionStatutEnum:
+      enum:
+      - recommandee
+      - autorisee
+      - refusee
+      type: string
+      description: |-
+        * `recommandee` - Recommandée
+        * `autorisee` - Autorisée
+        * `refusee` - Refusée
+    Etape:
+      type: object
+      properties:
+        etape_id:
+          type: integer
+          readOnly: true
+        numero_ordre:
+          type: integer
+          minimum: 1
+        zone:
+          type: integer
+        statut:
+          allOf:
+          - $ref: '#/components/schemas/Statut4b1Enum'
+          readOnly: true
+        date_debut:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        date_fin:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - date_debut
+      - date_fin
+      - etape_id
+      - numero_ordre
+      - statut
+      - zone
+    Incident:
+      type: object
+      properties:
+        incident_id:
+          type: integer
+          readOnly: true
+        type_incident:
+          allOf:
+          - $ref: '#/components/schemas/TypeIncidentEnum'
+          readOnly: true
+        date_incident:
+          type: string
+          format: date-time
+          readOnly: true
+        mission:
+          type: integer
+          readOnly: true
+          nullable: true
+        mesures:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+      required:
+      - date_incident
+      - incident_id
+      - mesures
+      - mission
+      - type_incident
+    Irrigation:
+      type: object
+      properties:
+        irrigation_id:
+          type: integer
+          readOnly: true
+        zone:
+          type: integer
+          readOnly: true
+        automatique:
+          type: boolean
+          readOnly: true
+        statut:
+          allOf:
+          - $ref: '#/components/schemas/Statut4b1Enum'
+          readOnly: true
+        duree_secondes:
+          type: integer
+          readOnly: true
+        volume_ml:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        date_debut:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        date_fin:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        decision:
+          type: integer
+          readOnly: true
+          nullable: true
+        utilisateur:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - automatique
+      - date_debut
+      - date_fin
+      - decision
+      - duree_secondes
+      - irrigation_id
+      - statut
+      - utilisateur
+      - volume_ml
+      - zone
+    Mesure:
+      type: object
+      properties:
+        mesure_id:
+          type: integer
+          readOnly: true
+        mission:
+          type: integer
+          readOnly: true
+        zone:
+          type: integer
+          readOnly: true
+        etape:
+          type: integer
+          readOnly: true
+        numero_point:
+          type: integer
+          readOnly: true
+        numero_lecture:
+          type: integer
+          readOnly: true
+        valeur_brute:
+          type: integer
+          readOnly: true
+          nullable: true
+        valeur_humidite:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          readOnly: true
+          nullable: true
+        date_heure_mesure:
+          type: string
+          format: date-time
+          readOnly: true
+        statut:
+          allOf:
+          - $ref: '#/components/schemas/MesureStatutEnum'
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        incident:
+          type: integer
+          readOnly: true
+          nullable: true
+        analyse:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - analyse
+      - date_heure_mesure
+      - etape
+      - incident
+      - message
+      - mesure_id
+      - mission
+      - numero_lecture
+      - numero_point
+      - statut
+      - valeur_brute
+      - valeur_humidite
+      - zone
+    MesureStatutEnum:
+      enum:
+      - valide
+      - invalide
+      - manquante
+      type: string
+      description: |-
+        * `valide` - Valide
+        * `invalide` - Invalide
+        * `manquante` - Manquante
+    Mission:
+      type: object
+      properties:
+        mission_id:
+          type: integer
+          readOnly: true
+        statut:
+          allOf:
+          - $ref: '#/components/schemas/MissionStatutEnum'
+          readOnly: true
+        date_creation:
+          type: string
+          format: date-time
+          readOnly: true
+        date_debut:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        date_fin:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        utilisateur:
+          type: integer
+        parcelle:
+          type: integer
+        etapes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Etape'
+      required:
+      - date_creation
+      - date_debut
+      - date_fin
+      - etapes
+      - mission_id
+      - parcelle
+      - statut
+      - utilisateur
+    MissionStatutEnum:
+      enum:
+      - planifiee
+      - en_cours
+      - terminee
+      - interrompue
+      - non_confirmee
+      type: string
+      description: |-
+        * `planifiee` - Planifiée
+        * `en_cours` - En cours
+        * `terminee` - Terminée
+        * `interrompue` - Interrompue
+        * `non_confirmee` - Non confirmée
+    PaginatedDecisionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Decision'
+    PaginatedIncidentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Incident'
+    PaginatedIrrigationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Irrigation'
+    PaginatedMesureList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Mesure'
+    Parcelle:
+      type: object
+      properties:
+        parcelle_id:
+          type: integer
+          readOnly: true
+        nom:
+          type: string
+          maxLength: 100
+        longitude:
+          type: number
+          format: double
+          nullable: true
+        latitude:
+          type: number
+          format: double
+          nullable: true
+        superficie:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        utilisateur:
+          type: integer
+        zones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Zone'
+          readOnly: true
+      required:
+      - nom
+      - parcelle_id
+      - utilisateur
+      - zones
+    PatchedCulture:
+      type: object
+      properties:
+        culture_id:
+          type: integer
+          readOnly: true
+        nom:
+          type: string
+          maxLength: 100
+        variete:
+          type: string
+          nullable: true
+          maxLength: 100
+    PatchedParcelle:
+      type: object
+      properties:
+        parcelle_id:
+          type: integer
+          readOnly: true
+        nom:
+          type: string
+          maxLength: 100
+        longitude:
+          type: number
+          format: double
+          nullable: true
+        latitude:
+          type: number
+          format: double
+          nullable: true
+        superficie:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        utilisateur:
+          type: integer
+        zones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Zone'
+          readOnly: true
+    PatchedZone:
+      type: object
+      properties:
+        zone_id:
+          type: integer
+          readOnly: true
+        nom:
+          type: string
+          maxLength: 100
+        superficie:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        humidite_minimum:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        humidite_maximum:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        geometrie_zone:
+          nullable: true
+        irrigation_auto_active:
+          type: boolean
+        parcelle:
+          type: integer
+        cultures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Culture'
+          readOnly: true
+    Statut4b1Enum:
+      enum:
+      - planifiee
+      - en_cours
+      - terminee
+      - interrompue
+      type: string
+      description: |-
+        * `planifiee` - Planifiée
+        * `en_cours` - En cours
+        * `terminee` - Terminée
+        * `interrompue` - Interrompue
+    TypeDecisionEnum:
+      enum:
+      - humidite_suffisante
+      - humidite_insuffisante
+      - mesure_invalide
+      type: string
+      description: |-
+        * `humidite_suffisante` - Humidité suffisante
+        * `humidite_insuffisante` - Humidité insuffisante
+        * `mesure_invalide` - Mesure invalide
+    TypeIncidentEnum:
+      enum:
+      - obstacle
+      - capteur_defaillant
+      - perte_communication
+      - mesure_invalide
+      type: string
+      description: |-
+        * `obstacle` - Obstacle
+        * `capteur_defaillant` - Capteur défaillant
+        * `perte_communication` - Perte de communication
+        * `mesure_invalide` - Mesure invalide
+    Zone:
+      type: object
+      properties:
+        zone_id:
+          type: integer
+          readOnly: true
+        nom:
+          type: string
+          maxLength: 100
+        superficie:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        humidite_minimum:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        humidite_maximum:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        geometrie_zone:
+          nullable: true
+        irrigation_auto_active:
+          type: boolean
+        parcelle:
+          type: integer
+        cultures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Culture'
+          readOnly: true
+      required:
+      - cultures
+      - humidite_maximum
+      - humidite_minimum
+      - nom
+      - parcelle
+      - zone_id
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

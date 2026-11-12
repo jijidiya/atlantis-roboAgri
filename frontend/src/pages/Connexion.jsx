@@ -1,23 +1,43 @@
 import './Connexion.css'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useConnexion } from '../hooks/useAuth'
 
 export default function Connexion() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const connexion = useConnexion()
+
   const [email, setEmail] = useState('')
   const [motDePasse, setMotDePasse] = useState('')
   const [afficher, setAfficher] = useState(false)
-  const [erreur, setErreur] = useState('')
+  const [erreurLocale, setErreurLocale] = useState('')
+
+  const destination = location.state?.depuis?.pathname ?? '/'
 
   const envoyer = (e) => {
     e.preventDefault()
+    setErreurLocale('')
+
     if (!email || !motDePasse) {
-      setErreur('Veuillez remplir tous les champs.')
+      setErreurLocale('Veuillez remplir tous les champs.')
       return
     }
-    // Connexion fictive : on branchera l'API du binôme B plus tard
-    navigate('/')
+
+    connexion.mutate(
+      { email, motDePasse },
+      {
+        onSuccess: () => navigate(destination, { replace: true }),
+      }
+    )
   }
+
+  // Erreur renvoyée par l'API (codes normalisés par api/http.js)
+  const erreurApi = connexion.isError ? connexion.error : null
+  const messageErreur =
+    erreurLocale ||
+    erreurApi?.message ||
+    ''
 
   return (
     <div className="connexion">
@@ -45,6 +65,8 @@ export default function Connexion() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="vous@fermedenzola.cd"
+              autoComplete="email"
+              disabled={connexion.isPending}
             />
           </label>
 
@@ -54,6 +76,8 @@ export default function Connexion() {
                 type={afficher ? 'text' : 'password'}
                 value={motDePasse}
                 onChange={(e) => setMotDePasse(e.target.value)}
+                autoComplete="current-password"
+                disabled={connexion.isPending}
               />
               <button type="button" onClick={() => setAfficher(!afficher)}>
                 {afficher ? 'Masquer' : 'Afficher'}
@@ -66,9 +90,22 @@ export default function Connexion() {
             <a href="#">Mot de passe oublié ?</a>
           </div>
 
-          {erreur && <p className="erreur">{erreur}</p>}
+          {messageErreur && <p className="erreur">{messageErreur}</p>}
 
-          <button type="submit" className="bouton large">Se connecter</button>
+          {/* Erreurs par champ renvoyées par DRF (ex: email invalide, mot de passe requis) */}
+          {erreurApi?.details && Object.keys(erreurApi.details).length > 0 && (
+            <ul className="erreur">
+              {Object.entries(erreurApi.details).map(([champ, messages]) => (
+                <li key={champ}>
+                  {champ} : {Array.isArray(messages) ? messages.join(', ') : String(messages)}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <button type="submit" className="bouton large" disabled={connexion.isPending}>
+            {connexion.isPending ? 'Connexion…' : 'Se connecter'}
+          </button>
         </form>
       </div>
     </div>
