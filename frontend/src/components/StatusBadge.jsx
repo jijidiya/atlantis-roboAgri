@@ -17,6 +17,11 @@ const styles = {
 
   'Administrateur': 'badge-vert',
   'Propriétaire': 'badge-bleu',
+
+  'Obstacle': 'badge-orange',
+  'Capteur défaillant': 'badge-rouge',
+  'Perte de communication': 'badge-violet',
+  'Mesure invalide': 'badge-rouge',
 }
 
 function StatusBadge({ statut }) {
