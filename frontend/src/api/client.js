@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api/v1'
+const BASE = import.meta.env.VITE_API_URL ?? '/api/v1'
 
 export class ErreurApi extends Error {
   constructor(status, code, message, details) {
@@ -21,10 +21,13 @@ export async function appeler(chemin, options = {}) {
     const e = donnees?.erreur
     throw new ErreurApi(
       reponse.status,
-      e?.code ?? 'ERREUR_INTERNE',
-      e?.message ?? 'Erreur inattendue',
-      e?.details,
+      e?.code ?? 'erreur',
+      e?.message ?? donnees?.detail ?? 'Erreur inattendue',
+      e?.details ?? donnees,
     )
   }
   return donnees
 }
+
+// Une liste peut être paginée ({results: [...]}) ou simple ([...])
+export const enListe = (d) => (Array.isArray(d) ? d : d?.results ?? [])
