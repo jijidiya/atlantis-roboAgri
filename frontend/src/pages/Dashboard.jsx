@@ -1,54 +1,174 @@
-const stats = [
-  { titre: 'État du robot', valeur: 'Connecté', detail: 'RB-01 · mis à jour il y a 2 min' },
-  { titre: 'Batterie', valeur: '78 %', detail: 'Autonomie estimée : 4 h 32' },
-  { titre: 'Missions du jour', valeur: '05', detail: '1 en cours · 3 planifiées' },
-  { titre: 'Incidents ouverts', valeur: '02', detail: '1 critique · 1 avertissement' },
-]
-
-const humidite = [
-  { zone: 'Zone A', couleur: '#1f6b43', valeurs: [44, 43, 45, 42, 41, 42, 42] },
-  { zone: 'Zone B', couleur: '#d98a1f', valeurs: [30, 28, 26, 24, 23, 22, 21] },
-  { zone: 'Zone C', couleur: '#3b7fc4', valeurs: [55, 56, 57, 56, 55, 56, 56] },
-]
-
-const missions = [
-  { nom: 'Relevé d\'humidité · 65 %', zone: 'Zone A', heure: '10:15', statut: 'En cours' },
-  { nom: 'Inspection des cultures', zone: 'Zone C', heure: '09:40', statut: 'Interrompue' },
-  { nom: 'Contrôle du sol', zone: 'Zone B', heure: '11:15', statut: 'Planifiée' },
-  { nom: 'Relevé de température', zone: 'Zone A', heure: '08:00', statut: 'Terminée' },
-]
-
-const alertes = [
-  { type: 'critique', titre: 'Humidité faible · Zone B', texte: '21 % mesuré, sous le seuil de 30 %. À irriguer.' },
-  { type: 'attention', titre: 'Obstacle détecté · Zone C', texte: 'Passage à contrôler avant la reprise.' },
-]
+import { useMemo } from 'react';
+import { useMoi } from '../hooks/useAuth';
+import { useParcelles } from '../hooks/useParcelles';
+import { useMissions } from '../hooks/useMissions';
+import { useIncidents } from '../hooks/useIncidents';
+import { useMesuresRecentes } from '../hooks/useMesures';
+import { etatRequete } from '../hooks/etatRequete';
+import { formaterHeure, formaterDateHeure } from '../utils/formatage';
 
 const classeStatut = {
-  'En cours': 'badge bleu',
-  'Interrompue': 'badge rouge',
-  'Planifiée': 'badge violet',
-  'Terminée': 'badge vert',
+  planifiee: 'badge violet',
+  en_cours: 'badge bleu',
+  terminee: 'badge vert',
+  interrompue: 'badge rouge',
+  non_confirmee: 'badge',
+};
+
+const labelStatut = {
+  planifiee: 'Planifiée',
+  en_cours: 'En cours',
+  terminee: 'Terminée',
+  interrompue: 'Interrompue',
+  non_confirmee: 'Non confirmée',
+};
+
+const labelIncident = {
+  obstacle: 'Obstacle',
+  capteur_defaillant: 'Capteur défaillant',
+  perte_communication: 'Perte de communication',
+  mesure_invalide: 'Mesure invalide',
+};
+
+function Courbe({ valeurs, couleur, largeur = 600, hauteur = 120 }) {
+  if (!valeurs || valeurs.length < 2) return null;
+  const min = Math.min(...valeurs);
+  const max = Math.max(...valeurs);
+  const etendue = Math.max(1, max - min);
+  const points = valeurs
+    .map((v, i) => {
+      const x = (i * largeur) / (valeurs.length - 1);
+      // Normalise dans [10, hauteur-10] pour ne pas coller aux bords.
+      const y = hauteur - 10 - ((v - min) / etendue) * (hauteur - 20);
+      return `${x},${y}`;
+    })
+    .join(' ');
+  return (
+    <polyline points={points} fill="none" stroke={couleur} strokeWidth="3" />
+  );
 }
 
-function Courbe({ valeurs, couleur }) {
-  const largeur = 600
-  const points = valeurs
-    .map((v, i) => `${(i * largeur) / (valeurs.length - 1)},${120 - v * 2}`)
-    .join(' ')
-  return <polyline points={points} fill="none" stroke={couleur} strokeWidth="3" />
-}
+const COULEURS = ['#1f6b43', '#d98a1f', '#3b7fc4', '#a43bb8', '#c44a3b'];
 
 export default function Dashboard() {
+  const moi = useMoi();
+  const parcelles = useParcelles();
+  const missions = useMissions();
+  const incidents = useIncidents();
+  const mesures = useMesuresRecentes({ limit: 200 });
+
+  const zoneParId = useMemo(() => {
+    const map = new Map();
+    for (const p of parcelles.data ?? []) {
+      for (const z of p.zones ?? []) map.set(z.zone_id, z);
+    }
+    return map;
+  }, [parcelles.data]);
+
+  // Séries d'humidité : on groupe les mesures valides par zone, limitées à 20 points.
+  const series = useMemo(() => {
+    const parZone = new Map();
+    for (const m of mesures.data ?? []) {
+      if (m.statut !== 'valide' || m.valeur_humidite == null) continue;
+      if (!parZone.has(m.zone)) parZone.set(m.zone, []);
+      parZone.get(m.zone).push(Number(m.valeur_humidite));
+    }
+    const resultat = [];
+    let i = 0;
+    for (const [zoneId, valeurs] of parZone.entries()) {
+      const zone = zoneParId.get(zoneId);
+      if (!zone || valeurs.length < 3) continue;
+      resultat.push({
+        zoneId,
+        nom: zone.nom,
+        couleur: COULEURS[i % COULEURS.length],
+        valeurs: valeurs.slice(0, 20).reverse(), // ordre chronologique
+      });
+      i += 1;
+      if (resultat.length >= 5) break;
+    }
+    return resultat;
+  }, [mesures.data, zoneParId]);
+
+  // Missions triées par date de création desc.
+  const missionsRecentes = useMemo(() => {
+    const liste = Array.isArray(missions.data) ? missions.data : [];
+    return [...liste]
+      .sort((a, b) => new Date(b.date_creation) - new Date(a.date_creation))
+      .slice(0, 5);
+  }, [missions.data]);
+
+  // Incidents récents.
+  const incidentsRecents = useMemo(() => {
+    const liste = Array.isArray(incidents.data)
+      ? incidents.data
+      : incidents.data?.results ?? [];
+    return [...liste]
+      .sort((a, b) => new Date(b.date_incident) - new Date(a.date_incident))
+      .slice(0, 3);
+  }, [incidents.data]);
+
+  const statsMissions = useMemo(() => {
+    const liste = Array.isArray(missions.data) ? missions.data : [];
+    const enCours = liste.filter((m) => m.statut === 'en_cours').length;
+    const planifiees = liste.filter((m) => m.statut === 'planifiee').length;
+    return { enCours, planifiees };
+  }, [missions.data]);
+
+  const etatGlobal = etatRequete(parcelles);
+  if (etatGlobal === 'chargement') {
+    return <div className="carte">Chargement du tableau de bord…</div>;
+  }
+  if (etatGlobal === 'erreur') {
+    return (
+      <div className="carte">
+        <p style={{ color: 'crimson' }}>{parcelles.error.message}</p>
+        <button className="bouton" onClick={() => parcelles.refetch()}>
+          Réessayer
+        </button>
+      </div>
+    );
+  }
+
+  const dateAujourdhui = new Date().toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
+  const stats = [
+    {
+      titre: 'État du robot',
+      valeur: 'En attente',
+      detail: 'API robot non branchée',
+    },
+    {
+      titre: 'Missions du jour',
+      valeur: String(missionsRecentes.length).padStart(2, '0'),
+      detail: `${statsMissions.enCours} en cours · ${statsMissions.planifiees} planifiée(s)`,
+    },
+    {
+      titre: 'Incidents ouverts',
+      valeur: String(incidentsRecents.length).padStart(2, '0'),
+      detail: 'voir page Incidents',
+    },
+    {
+      titre: 'Parcelles',
+      valeur: String(parcelles.data?.length ?? 0).padStart(2, '0'),
+      detail: 'voir page Parcelles',
+    },
+  ];
+
   return (
     <div>
       <div className="entete">
         <div>
           <h1>Tableau de bord</h1>
           <p className="sous-titre">
-            Bonjour Alain, voici l'essentiel de votre exploitation aujourd'hui.
+            Bonjour {moi.data?.prenom ?? ''}, voici l'essentiel de votre exploitation aujourd'hui.
           </p>
         </div>
-        <span className="date">21 octobre 2026</span>
+        <span className="date">{dateAujourdhui}</span>
       </div>
 
       <div className="stats">
@@ -64,26 +184,42 @@ export default function Dashboard() {
       <div className="grille-2">
         <div className="carte">
           <h2>Évolution de l'humidité du sol</h2>
-          <svg viewBox="0 0 600 120" className="courbe">
-            {humidite.map((h) => (
-              <Courbe key={h.zone} valeurs={h.valeurs} couleur={h.couleur} />
-            ))}
-          </svg>
-          <div className="legende">
-            {humidite.map((h) => (
-              <span key={h.zone}>
-                <i style={{ background: h.couleur }} /> {h.zone}
-              </span>
-            ))}
-          </div>
+          {series.length === 0 ? (
+            <p style={{ color: '#888', padding: '1rem 0' }}>
+              Pas encore assez de mesures valides pour tracer une courbe.
+            </p>
+          ) : (
+            <>
+              <svg viewBox="0 0 600 120" className="courbe">
+                {series.map((s) => (
+                  <Courbe key={s.zoneId} valeurs={s.valeurs} couleur={s.couleur} />
+                ))}
+              </svg>
+              <div className="legende">
+                {series.map((s) => (
+                  <span key={s.zoneId}>
+                    <i style={{ background: s.couleur }} /> {s.nom}
+                  </span>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         <div className="carte">
           <h2>À votre attention</h2>
-          {alertes.map((a) => (
-            <div className={`alerte ${a.type}`} key={a.titre}>
-              <strong>{a.titre}</strong>
-              <p>{a.texte}</p>
+          {incidentsRecents.length === 0 && (
+            <p style={{ color: '#888' }}>Aucun incident récent.</p>
+          )}
+          {incidentsRecents.map((i) => (
+            <div className="alerte critique" key={i.incident_id}>
+              <strong>
+                {labelIncident[i.type_incident] ?? i.type_incident}
+              </strong>
+              <p>
+                {formaterDateHeure(i.date_incident)}
+                {i.mission && ` · mission #${i.mission}`}
+              </p>
             </div>
           ))}
         </div>
@@ -91,27 +227,35 @@ export default function Dashboard() {
 
       <div className="carte">
         <h2>Missions récentes</h2>
-        <table className="tableau">
-          <thead>
-            <tr>
-              <th>Mission</th>
-              <th>Zone</th>
-              <th>Heure</th>
-              <th>Statut</th>
-            </tr>
-          </thead>
-          <tbody>
-            {missions.map((m) => (
-              <tr key={m.nom}>
-                <td>{m.nom}</td>
-                <td>{m.zone}</td>
-                <td>{m.heure}</td>
-                <td><span className={classeStatut[m.statut]}>{m.statut}</span></td>
+        {missionsRecentes.length === 0 ? (
+          <p style={{ color: '#888' }}>Aucune mission enregistrée.</p>
+        ) : (
+          <table className="tableau">
+            <thead>
+              <tr>
+                <th>Mission</th>
+                <th>Parcelle</th>
+                <th>Heure</th>
+                <th>Statut</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {missionsRecentes.map((m) => (
+                <tr key={m.mission_id}>
+                  <td>Mission #{m.mission_id}</td>
+                  <td>{m.parcelle}</td>
+                  <td>{formaterHeure(m.date_creation)}</td>
+                  <td>
+                    <span className={classeStatut[m.statut] ?? 'badge'}>
+                      {labelStatut[m.statut] ?? m.statut}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
-  )
+  );
 }
