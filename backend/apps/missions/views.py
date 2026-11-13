@@ -2,6 +2,7 @@
 from django.utils import timezone
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Mission
@@ -25,10 +26,19 @@ class MissionViewSet(
     par les actions ci-dessous, pour éviter un état incohérent."""
 
     serializer_class = MissionSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        """Filtres : /api/missions/?parcelle=1&statut=en_cours"""
+        """Un administrateur voit toutes les missions ; un proprietaire, les siennes.
+
+        Filtres optionnels : /api/missions/?parcelle=1&statut=en_cours
+        """
         requete = Mission.objects.prefetch_related("etapes").order_by("-date_creation")
+
+        # Filtrage par rôle : un proprietaire ne voit que ses propres missions.
+        if self.request.user.role != "administrateur":
+            requete = requete.filter(utilisateur=self.request.user)
+
         parcelle = self.request.query_params.get("parcelle")
         statut = self.request.query_params.get("statut")
         if parcelle:
@@ -36,6 +46,21 @@ class MissionViewSet(
         if statut:
             requete = requete.filter(statut=statut)
         return requete
+
+    def perform_create(self, serializer):
+        """Force utilisateur = utilisateur connecté (sinon faille de sécurité).
+
+        Un administrateur peut cibler un autre utilisateur s'il le précise
+        explicitement dans le corps de la requête.
+        """
+        if (
+            self.request.user.role == "administrateur"
+            and "utilisateur" in serializer.validated_data
+            and serializer.validated_data["utilisateur"] is not None
+        ):
+            serializer.save()
+        else:
+            serializer.save(utilisateur=self.request.user)
 
     def _transition(self, nom):
         """Applique une transition de statut, ou renvoie 409 si elle est interdite."""

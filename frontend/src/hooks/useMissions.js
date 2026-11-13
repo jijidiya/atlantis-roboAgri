@@ -1,26 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/http';
+import { STATUTS_MISSION_FINAUX } from '../api/config';
 
 export const clesMissions = {
   tout: ['missions'],
-  liste: () => ['missions', 'liste'],
+  liste: (filtres = {}) => ['missions', 'liste', filtres],
   detail: (id) => ['missions', 'detail', id],
 };
 
-export function useMissions() {
+// --- Lecture -----------------------------------------------------------
+
+export function useMissions(filtres = {}) {
   return useQuery({
-    queryKey: clesMissions.liste(),
+    queryKey: clesMissions.liste(filtres),
     queryFn: () => api.get('/missions/'),
-    // 3 s seulement si au moins une mission est active, sinon rien.
-    refetchInterval: (query) => {
-      const data = query.state.data;
-      if (!Array.isArray(data)) return false;
-      const actives = data.some((m) =>
-        ['planifiee', 'en_cours'].includes(m.statut)
-      );
-      return actives ? 3_000 : false;
-    },
-    refetchIntervalInBackground: false,
   });
 }
 
@@ -28,13 +21,52 @@ export function useMission(id) {
   return useQuery({
     queryKey: clesMissions.detail(id),
     queryFn: () => api.get(`/missions/${id}/`),
-    enabled: Number.isFinite(id),
+    enabled: Boolean(id),
+    // Polling 3 s TANT QUE la mission peut encore changer, sinon rien.
     refetchInterval: (query) => {
-      const s = query.state.data?.statut;
-      if (!s) return false;
-      const finaux = ['terminee', 'interrompue', 'non_confirmee'];
-      return finaux.includes(s) ? false : 3_000;
+      const statut = query.state.data?.statut;
+      if (!statut) return false; // pas encore chargée : on attend
+      return STATUTS_MISSION_FINAUX.includes(statut) ? false : 3_000;
     },
-    refetchIntervalInBackground: false,
+  });
+}
+
+// --- Mutations ---------------------------------------------------------
+
+function invaliderMission(queryClient, id) {
+  queryClient.invalidateQueries({ queryKey: clesMissions.tout });
+  if (id) queryClient.invalidateQueries({ queryKey: clesMissions.detail(id) });
+}
+
+export function useCreerMission() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    // Corps attendu : { parcelle, utilisateur, etapes: [{ numero_ordre, zone }] }
+    mutationFn: (corps) => api.post('/missions/', corps),
+    onSuccess: () => invaliderMission(queryClient),
+  });
+}
+
+export function useDemarrerMission(id) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.post(`/missions/${id}/demarrer/`, {}),
+    onSuccess: () => invaliderMission(queryClient, id),
+  });
+}
+
+export function useInterrompreMission(id) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.post(`/missions/${id}/interrompre/`, {}),
+    onSuccess: () => invaliderMission(queryClient, id),
+  });
+}
+
+export function useTerminerMission(id) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.post(`/missions/${id}/terminer/`, {}),
+    onSuccess: () => invaliderMission(queryClient, id),
   });
 }

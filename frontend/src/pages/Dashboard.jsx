@@ -55,7 +55,8 @@ export default function Dashboard() {
   const parcelles = useParcelles();
   const missions = useMissions();
   const incidents = useIncidents();
-  const mesures = useMesuresRecentes({ limit: 200 });
+  // CORRECTION 1 : le hook attend `limite`, pas `limit`.
+  const mesures = useMesuresRecentes({ limite: 200 });
 
   const zoneParId = useMemo(() => {
     const map = new Map();
@@ -67,8 +68,10 @@ export default function Dashboard() {
 
   // Séries d'humidité : on groupe les mesures valides par zone, limitées à 20 points.
   const series = useMemo(() => {
+    // CORRECTION 2 : /mesures/ est paginé -> { count, results }.
+    const liste = mesures.data?.results ?? [];
     const parZone = new Map();
-    for (const m of mesures.data ?? []) {
+    for (const m of liste) {
       if (m.statut !== 'valide' || m.valeur_humidite == null) continue;
       if (!parZone.has(m.zone)) parZone.set(m.zone, []);
       parZone.get(m.zone).push(Number(m.valeur_humidite));
