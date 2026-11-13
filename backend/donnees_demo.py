@@ -56,7 +56,7 @@ DEBIT_POMPE_ML_PAR_S = 16.7  # pompe d'environ 1 L/min (valeur fictive)
 # --------------------------------------------------------------------------
 PROPRIETAIRES = [
     {
-        "prenom": "Junior", "nom": "Diyabanza", "email": "junior.diyabanza@roboagri.cd",
+        "prenom": "Junior", "nom": "Diyabanza", "email": "junior.diyabanza",
         "parcelle": {"nom": "Maraîchage de Kimwenza (démo)", "latitude": -4.42,
                      "longitude": 15.30, "superficie": 850},
         "zones": [
@@ -67,7 +67,7 @@ PROPRIETAIRES = [
         ],
     },
     {
-        "prenom": "Gabriel", "nom": "Lukanda", "email": "gabriel.lukanda@roboagri.cd",
+        "prenom": "Gabriel", "nom": "Lukanda", "email": "gabriel.lukanda",
         "parcelle": {"nom": "Jardin expérimental de Mont-Ngafula (démo)", "latitude": -4.45,
                      "longitude": 15.25, "superficie": 1200},
         "zones": [
@@ -80,7 +80,7 @@ PROPRIETAIRES = [
         ],
     },
     {
-        "prenom": "Sabin", "nom": "Ntwali", "email": "sabin.ntwali@roboagri.cd",
+        "prenom": "Sabin", "nom": "Ntwali", "email": "sabin.ntwali",
         "parcelle": {"nom": "Pépinière de Maluku (démo)", "latitude": -4.05,
                      "longitude": 16.10, "superficie": 2000},
         "zones": [
