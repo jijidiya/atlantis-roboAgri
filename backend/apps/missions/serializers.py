@@ -27,6 +27,11 @@ class MissionSerializer(serializers.ModelSerializer):
             "utilisateur", "parcelle", "etapes",
         ]
         read_only_fields = ["mission_id", "statut", "date_creation", "date_debut", "date_fin"]
+        extra_kwargs = {
+            # Le front n'a pas à fournir utilisateur : perform_create le force
+            # à self.request.user pour les non-administrateurs.
+            "utilisateur": {"required": False, "allow_null": True},
+        }
 
     def validate_etapes(self, etapes):
         """RG5 : au moins une étape, et des numéros d'ordre sans doublon."""
@@ -54,6 +59,8 @@ class MissionSerializer(serializers.ModelSerializer):
     def create(self, donnees):
         """Crée la mission et ses étapes ensemble : si une étape échoue, rien n'est créé."""
         etapes = donnees.pop("etapes")
+        # Si utilisateur est absent (null), on garde la valeur par défaut du modèle
+        # s'il y en a une ; sinon perform_create l'écrasera avec self.request.user.
         mission = Mission.objects.create(**donnees)
         Etape.objects.bulk_create(Etape(mission=mission, **etape) for etape in etapes)
         return mission
