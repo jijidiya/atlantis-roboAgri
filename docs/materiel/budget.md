@@ -31,16 +31,18 @@ Dernière mise à jour : 09/11/2026
 | 07/11/2026 | 8.00 | Fils Dupont (F-F) | Binôme A |
 | 07/11/2026 | 4.00 | Slot holder | Binôme A |
 | 09/11/2026 | 3.39 | Slot holder | Binôme A |
+| 12/11/2026 | 1.09 | Ruban adhésif double face 2x | Binôme A |
+| 13/11/2026 | 1.96 | Fer à souder + étain 1m | Binôme A |
 
 
 ## 2. Récapitulatif
 
 | Élément | Montant (USD) |
 |---|---|
-Frais de transport | 7.47 |
-| Total dépensé | 134,41 |
+Frais de transport | 9.64 |
+| Total dépensé | 137,01 |
 | Budget indicatif du prototype | 200  |
-| Reste disponible | 65,59 |
+| Reste disponible | 62,99 |
 
 ## 3. Répartition par poste
 
