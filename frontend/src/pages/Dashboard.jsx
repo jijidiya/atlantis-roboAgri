@@ -54,8 +54,7 @@ export default function Dashboard() {
   const moi = useMoi();
   const parcelles = useParcelles();
   const missions = useMissions();
-  const incidents = useIncidents();
-  // CORRECTION 1 : le hook attend `limite`, pas `limit`.
+  const incidents = useIncidents({ polling: false });
   const mesures = useMesuresRecentes({ limite: 200 });
 
   const zoneParId = useMemo(() => {

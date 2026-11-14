@@ -33,6 +33,17 @@ export function useMoi() {
   });
 }
 
+export function useModifierProfil() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (corps) => api.patch('/auth/moi/', corps),
+    onSuccess: (data) => {
+      // Met à jour le cache pour tous les écrans qui lisent useMoi().
+      queryClient.setQueryData(clesAuth.moi(), data);
+    },
+  });
+}
+
 export function useDeconnexion() {
   const queryClient = useQueryClient();
   return () => {
