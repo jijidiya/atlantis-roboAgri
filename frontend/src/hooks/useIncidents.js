@@ -6,7 +6,12 @@ export const clesIncidents = {
   liste: (filtres = {}) => ['incidents', 'liste', filtres],
 };
 
-export function useIncidents(filtres = {}) {
+/**
+ * Liste des incidents.
+ * polling : true (par defaut) -> refresh toutes les 10 s.
+ *           false -> aucune requete supplementaire (page Historique, Dashboard).
+ */
+export function useIncidents({ polling = true, ...filtres } = {}) {
   return useQuery({
     queryKey: clesIncidents.liste(filtres),
     queryFn: () => {
@@ -17,8 +22,9 @@ export function useIncidents(filtres = {}) {
       const qs = params.toString();
       return api.get(`/incidents/${qs ? `?${qs}` : ''}`);
     },
-    // 10 s : les incidents peuvent arriver à tout moment.
-    refetchInterval: 10_000,
+    // 10 s : les incidents peuvent arriver a tout moment (page Incidents).
+    // Desactive sur les pages statiques (Historique, Dashboard).
+    refetchInterval: polling ? 10_000 : false,
     refetchIntervalInBackground: false,
   });
 }
