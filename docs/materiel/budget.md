@@ -27,7 +27,7 @@ Dernière mise à jour : 14/11/2026
 | 03/11/2026 | 5.00 | Fils Dupont (M-M, M-F) | Binôme A |
 | 07/11/2026 | 1.74 | Condensateurs 1000uF x2 | Binôme A |
 | 07/11/2026 | 2.60 | Li-ion 18650 x2 | Binôme A |
-| 07/11/2026 | 4.34 | Câble USB type C | Binôme A |
+| 14/11/2026 | 4.34 | Câble USB type C | Binôme A |
 | 07/11/2026 | 8.00 | Fils Dupont (F-F) | Binôme A |
 | 07/11/2026 | 4.00 | Slot holder | Binôme A |
 | 09/11/2026 | 3.39 | Slot holder | Binôme A |
