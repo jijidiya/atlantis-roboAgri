@@ -31,7 +31,7 @@
 - Modèles Django : au singulier, avec `verbose_name` pour l'affichage.
 
 ## 5. Base de données et SQL
-- Tables (modèles Django) au singulier : `Parcelle`, `Zone`, `Culture`, `Mission`, `EtapeMission`, `MesureHumidite`, `Irrigation`, `Incident`.
+- Tables (modèles Django) au singulier : `Parcelle`, `Zone`, `Culture`, `Mission`, `Etape`, `Mesure`, `Irrigation`, `Incident`.
 - Champs en `snake_case` : `date_creation`, `seuil_pourcent`, `duree_secondes`.
 - Clé primaire : `id`. Clé étrangère : `zone_id`, `mission_id`.
 - SQL brut : mots-clés en `MAJUSCULES`, une clause par ligne, jamais de `SELECT *` dans l'application.
@@ -52,8 +52,8 @@
 - Les props et les variables d'état en `camelCase`, avec les mêmes mots que le glossaire : `humiditeSol`, `zoneSelectionnee`.
 - Les hooks personnalisés commencent par `use` (obligatoire pour React) : `useMesures`, `useMissions`.
 - Fonctions qui réagissent à un événement : préfixe `gerer` (`gererClicZone`). Props qui reçoivent une fonction : préfixe `sur` (`surChangementZone`).
-- Les appels à l'API sont dans `frontend/src/services/`, jamais directement dans les composants.
-- Dossiers de `frontend/src/` : `composants/`, `pages/`, `hooks/`, `services/`.
+- Les appels à l'API sont dans `frontend/src/api/`, jamais directement dans les composants.
+- Dossiers de `frontend/src/` : `composants/`, `pages/`, `hooks/`, `api/`.
 - Un composant qui dépasse environ 150 lignes se découpe en sous-composants.
 
 ## 8. Firmware ESP32 (MicroPython)
