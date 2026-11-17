@@ -1,83 +1,150 @@
-import { useState } from 'react'
-import StatCard from '../components/StatCard'
-import StatusBadge from '../components/StatusBadge'
-import { incidents as incidentsInitiaux } from '../data/incidents'
+import { useState, useMemo } from 'react';
+import StatCard from '../components/StatCard';
+import { useIncidents } from '../hooks/useIncidents';
+import { useMissions } from '../hooks/useMissions';
+import { etatRequete } from '../hooks/etatRequete';
+import { formaterDateHeure } from '../utils/formatage';
 
-function Incidents() {
-  const [incidents, setIncidents] = useState(incidentsInitiaux)
-  const [selectionId, setSelectionId] = useState('INC-028')
-  const [filtreGravite, setFiltreGravite] = useState('Toutes')
+const TYPES = [
+  { cle: 'obstacle', label: 'Obstacle', classe: 'badge orange' },
+  { cle: 'capteur_defaillant', label: 'Capteur défaillant', classe: 'badge rouge' },
+  { cle: 'perte_communication', label: 'Perte de communication', classe: 'badge violet' },
+  { cle: 'mesure_invalide', label: 'Mesure invalide', classe: 'badge bleu' },
+];
 
-  const affiches = filtreGravite === 'Toutes'
-    ? incidents
-    : incidents.filter((i) => i.gravite === filtreGravite)
+const typeInfo = Object.fromEntries(TYPES.map((t) => [t.cle, t]));
 
-  const selection = incidents.find((i) => i.id === selectionId)
-  const ouverts = incidents.filter((i) => i.statut !== 'Résolu').length
+export default function Incidents() {
+  const [filtreType, setFiltreType] = useState(null);
+  const [selectionId, setSelectionId] = useState(null);
 
-  function changerStatut(id, statut) {
-    setIncidents(incidents.map((i) => (i.id === id ? { ...i, statut } : i)))
-  }
+  // Polling 10 s actif (page dédiée — la donnée peut changer à tout moment).
+  const incidents = useIncidents(filtreType ? { type_incident: filtreType } : {});
+  const missions = useMissions();
+
+  const etat = etatRequete(incidents);
+
+  const liste = incidents.data?.results ?? [];
+  const total = incidents.data?.count ?? liste.length;
+
+  const missionsParId = useMemo(() => {
+    const map = new Map();
+    for (const m of missions.data ?? []) map.set(m.mission_id, m);
+    return map;
+  }, [missions.data]);
+
+  const selection = liste.find((i) => i.incident_id === selectionId);
+
+  const compterType = (cle) => liste.filter((i) => i.type_incident === cle).length;
 
   return (
     <div>
       <h1>Incidents et alertes</h1>
-      <p className="sous-titre">Priorisez les interventions et gardez une trace de leur résolution.</p>
+      <p className="sous-titre">
+        Consultez les incidents signalés par le robot et les capteurs.
+      </p>
 
       <div className="cartes">
-        <StatCard titre="Incidents ouverts" valeur={String(ouverts).padStart(2, '0')} details="Une intervention est nécessaire" />
-        <StatCard titre="Critiques" valeur={String(incidents.filter((i) => i.gravite === 'Critique' && i.statut !== 'Résolu').length).padStart(2, '0')} details="À traiter en priorité" />
-        <StatCard titre="Total" valeur={String(incidents.length).padStart(2, '0')} details="Sur 7 jours" />
+        <StatCard
+          titre="Total"
+          valeur={String(total).padStart(2, '0')}
+          details="Toutes périodes"
+        />
+        <StatCard
+          titre="Capteur"
+          valeur={String(compterType('capteur_defaillant')).padStart(2, '0')}
+          details="Capteur défaillant"
+        />
+        <StatCard
+          titre="Communication"
+          valeur={String(compterType('perte_communication')).padStart(2, '0')}
+          details="Perte de signal"
+        />
       </div>
 
       <div className="onglets">
-        {['Toutes', 'Critique', 'Avertissement', 'Information'].map((g) => (
-          <button key={g} className={g === filtreGravite ? 'onglet actif' : 'onglet'} onClick={() => setFiltreGravite(g)}>
-            {g}
+        <button
+          className={filtreType === null ? 'onglet actif' : 'onglet'}
+          onClick={() => setFiltreType(null)}
+        >
+          Tous
+        </button>
+        {TYPES.map((t) => (
+          <button
+            key={t.cle}
+            className={t.cle === filtreType ? 'onglet actif' : 'onglet'}
+            onClick={() => setFiltreType(t.cle)}
+          >
+            {t.label}
           </button>
         ))}
       </div>
 
-      <div className="incidents-mise-en-page">
-        <table className="tableau">
-          <thead>
-            <tr><th>Incident</th><th>Gravité</th><th>Zone</th><th>Date</th><th>Statut</th></tr>
-          </thead>
-          <tbody>
-            {affiches.map((i) => (
-              <tr key={i.id} className={i.id === selectionId ? 'ligne-selection' : 'ligne-cliquable'} onClick={() => setSelectionId(i.id)}>
-                <td><strong>{i.titre}</strong><small>{i.id} · {i.source}</small></td>
-                <td><StatusBadge statut={i.gravite} /></td>
-                <td>{i.zone}</td>
-                <td>{i.date}</td>
-                <td><StatusBadge statut={i.statut} /></td>
+      {etat === 'chargement' && <p>Chargement…</p>}
+      {etat === 'erreur' && <p className="erreur">{incidents.error.message}</p>}
+      {etat === 'vide' && (
+        <p style={{ padding: '1rem', color: '#888' }}>Aucun incident.</p>
+      )}
+      {etat === 'succes' && (
+        <div className="incidents-mise-en-page">
+          <table className="tableau">
+            <thead>
+              <tr>
+                <th>Incident</th>
+                <th>Type</th>
+                <th>Mission</th>
+                <th>Date</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {liste.map((i) => {
+                const info = typeInfo[i.type_incident] ?? {
+                  label: i.type_incident,
+                  classe: 'badge',
+                };
+                return (
+                  <tr
+                    key={i.incident_id}
+                    className={
+                      i.incident_id === selectionId ? 'ligne-selection' : 'ligne-cliquable'
+                    }
+                    onClick={() => setSelectionId(i.incident_id)}
+                  >
+                    <td>
+                      <strong>INC-{String(i.incident_id).padStart(3, '0')}</strong>
+                      <small>{i.mesures?.length ?? 0} mesure(s) liée(s)</small>
+                    </td>
+                    <td>
+                      <span className={info.classe}>{info.label}</span>
+                    </td>
+                    <td>{i.mission ? `MIS-${i.mission}` : '—'}</td>
+                    <td>{formaterDateHeure(i.date_incident)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
 
-        {selection && (
-          <div className="carte-mission panneau-detail">
-            <strong>{selection.titre}</strong>
-            <small>{selection.id} · {selection.date}</small>
-            <div className="badges-ligne">
-              <StatusBadge statut={selection.gravite} />
-              <StatusBadge statut={selection.statut} />
+          {selection && (
+            <div className="carte-mission panneau-detail">
+              <strong>INC-{String(selection.incident_id).padStart(3, '0')}</strong>
+              <small>{formaterDateHeure(selection.date_incident)}</small>
+              <div className="badges-ligne">
+                <span className={typeInfo[selection.type_incident]?.classe ?? 'badge'}>
+                  {typeInfo[selection.type_incident]?.label ?? selection.type_incident}
+                </span>
+              </div>
+              {selection.mission && (
+                <p>Mission liée : MIS-{selection.mission}</p>
+              )}
+              <p>Mesures concernées : {selection.mesures?.length ?? 0}</p>
+              <p style={{ color: '#888', fontSize: 13 }}>
+                La gestion (acquitter / résoudre) n’est pas exposée par l’API actuelle.
+              </p>
             </div>
-            <p>{selection.detail}</p>
-            <strong>Suivi de l’incident</strong>
-            <ul>
-              {selection.suivi.map((s) => <li key={s}>{s}</li>)}
-            </ul>
-            <div className="boutons-ligne">
-              <button className="bouton-petit" onClick={() => changerStatut(selection.id, 'À traiter')}>Acquitter</button>
-              <button className="bouton-principal" onClick={() => changerStatut(selection.id, 'Résolu')}>Résoudre</button>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
-  )
+  );
 }
-
-export default Incidents

@@ -11,7 +11,8 @@ import {
 
 export default function Parcelles() {
   const parcellesQuery = useParcelles();
-  const mesuresQuery = useMesuresRecentes({ limit: 200 });
+  // CORRECTION 1 : le hook attend `limite`, pas `limit`.
+  const mesuresQuery = useMesuresRecentes({ limite: 200 });
   const [recherche, setRecherche] = useState('');
   const [culture, setCulture] = useState('Toutes');
 
@@ -29,8 +30,9 @@ export default function Parcelles() {
     );
   }, [parcellesQuery.data]);
 
+  // CORRECTION 2 : /mesures/ est paginé -> { count, results }.
   const humidites = useMemo(
-    () => humiditeParZone(mesuresQuery.data ?? []),
+    () => humiditeParZone(mesuresQuery.data?.results ?? []),
     [mesuresQuery.data]
   );
 

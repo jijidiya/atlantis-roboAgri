@@ -75,3 +75,23 @@ export function useDecisionZone(id, { polling = false } = {}) {
     refetchIntervalInBackground: false,
   });
 }
+
+/**
+ * Enregistre les seuils de plusieurs zones en un seul clic.
+ * Recoit { [zoneId]: { humidite_minimum, humidite_maximum } }.
+ */
+export function useModifierSeuilsZones() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (modifications) =>
+      Promise.all(
+        Object.entries(modifications).map(([id, patch]) =>
+          api.patch(`/zones/${id}/`, patch)
+        )
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: clesZones.tout });
+      queryClient.invalidateQueries({ queryKey: clesParcelles.tout });
+    },
+  });
+}

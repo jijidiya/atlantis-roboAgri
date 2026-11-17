@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from . import services
 from .serializers import (
     ConnexionSerializer,
+    ProfilModificationSerializer,
     RafraichissementSerializer,
     UtilisateurConnecteSerializer,
 )
@@ -49,11 +50,18 @@ class RafraichissementAPIView(APIView):
         entree.is_valid(raise_exception=True)
         return Response(entree.validated_data, status=status.HTTP_200_OK)
 
-
 class MoiAPIView(APIView):
-    """GET /auth/moi/ -> utilisateur connecté et son rôle."""
+    """GET /auth/moi/ : profil courant. PATCH /auth/moi/ : modifier prenom/nom/email."""
 
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        return Response(UtilisateurConnecteSerializer(request.user).data)
+
+    def patch(self, request):
+        serializer = ProfilModificationSerializer(
+            request.user, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(UtilisateurConnecteSerializer(request.user).data)

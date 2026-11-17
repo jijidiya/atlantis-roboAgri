@@ -3,37 +3,44 @@ import { api } from '../api/http';
 
 export const clesMesures = {
   tout: ['mesures'],
-  recentes: (limit) => ['mesures', 'recentes', limit],
-  parMission: (missionId) => ['mesures', 'mission', missionId],
+  liste: (filtres = {}) => ['mesures', 'liste', filtres],
 };
 
-// 100 dernières mesures, tous statuts confondus (valide + invalide + manquante).
-// Tri par date desc côté client (l'ordering n'est pas documenté côté API).
-export function useMesuresRecentes({ limit = 100 } = {}) {
+/**
+ * Mesures d'une mission ou d'une zone.
+ * polling : true pendant une mission active -> refresh toutes les 3 s.
+ * Securite : depend de services.lister_mesures cote backend (filtre user a verifier).
+ */
+export function useMesures({ mission, zone, statut, du, au, polling = false } = {}) {
+  const params = new URLSearchParams();
+  if (mission) params.set('mission', mission);
+  if (zone) params.set('zone', zone);
+  if (statut) params.set('statut', statut);
+  if (du) params.set('du', du);
+  if (au) params.set('au', au);
+  const suffixe = params.toString() ? `?${params}` : '';
+
   return useQuery({
-    queryKey: clesMesures.recentes(limit),
-    queryFn: async () => {
-      const reponse = await api.get(`/mesures/?page_size=${limit}`);
-      const liste = Array.isArray(reponse) ? reponse : reponse?.results ?? [];
-      return [...liste].sort(
-        (a, b) => new Date(b.date_heure_mesure) - new Date(a.date_heure_mesure)
-      );
-    },
-    staleTime: 30_000,
+    queryKey: clesMesures.liste({ mission, zone, statut, du, au }),
+    queryFn: () => api.get(`/mesures/${suffixe}`),
+    enabled: Boolean(mission || zone),
+    refetchInterval: polling ? 3000 : false,
   });
 }
 
-// Mesures d'une mission, en polling 3 s tant que la mission n'est pas finie.
-export function useMesuresMission(missionId, { statutMission } = {}) {
-  const finaux = ['terminee', 'interrompue', 'non_confirmee'];
+/**
+ * Dernieres mesures toutes zones/missions confondues.
+ * Utilise par le Dashboard pour un apercu rapide.
+ * polling : true -> refresh toutes les 3 s (pendant une mission active).
+ */
+export function useMesuresRecentes({ limite = 10, statut = 'valide', polling = false } = {}) {
+  const params = new URLSearchParams();
+  params.set('page_size', limite);
+  if (statut) params.set('statut', statut);
+
   return useQuery({
-    queryKey: clesMesures.parMission(missionId),
-    queryFn: async () => {
-      const reponse = await api.get(`/mesures/?mission=${missionId}&page_size=100`);
-      return Array.isArray(reponse) ? reponse : reponse?.results ?? [];
-    },
-    enabled: Number.isFinite(missionId),
-    refetchInterval: statutMission && !finaux.includes(statutMission) ? 3_000 : false,
-    refetchIntervalInBackground: false,
+    queryKey: ['mesures', 'recentes', { limite, statut }],
+    queryFn: () => api.get(`/mesures/?${params}`),
+    refetchInterval: polling ? 3000 : false,
   });
 }

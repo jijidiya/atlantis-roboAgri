@@ -1,61 +1,142 @@
-import { useState } from 'react'
-import StatusBadge from '../components/StatusBadge'
-import { missions as missionsInitiales } from '../data/missions'
-import { transitions } from '../data/transitions'
+import { useState } from 'react';
+import StatusBadge from '../components/StatusBadge';
+import { useParcelles } from '../hooks/useParcelles';
+import { useZones } from '../hooks/useZones';
+import {
+  useMissions,
+  useCreerMission,
+  useDemarrerMission,
+  useInterrompreMission,
+  useTerminerMission,
+} from '../hooks/useMissions';
+import { etatRequete } from '../hooks/etatRequete';
 
-function pourcentage(m) {
-  return Math.round((m.faits / m.total) * 100)
+const LIBELLES_STATUT = {
+  planifiee: 'Planifiée',
+  en_cours: 'En cours',
+  terminee: 'Terminée',
+  interrompue: 'Interrompue',
+  non_confirmee: 'Non confirmée',
+};
+
+const ONGLETS = [
+  { nom: 'Toutes', statuts: null },
+  { nom: 'En cours', statuts: ['en_cours'] },
+  { nom: 'Planifiées', statuts: ['planifiee'] },
+  { nom: 'Terminées', statuts: ['terminee'] },
+  { nom: 'À vérifier', statuts: ['interrompue', 'non_confirmee'] },
+];
+
+function progression(mission) {
+  const total = mission.etapes.length;
+  const faits = mission.etapes.filter((e) => e.statut === 'terminee').length;
+  return { faits, total, pct: total ? Math.round((faits / total) * 100) : 0 };
 }
 
-const onglets = [
-  { nom: 'Toutes', statuts: null },
-  { nom: 'En cours', statuts: ['En cours'] },
-  { nom: 'Planifiées', statuts: ['Planifiée'] },
-  { nom: 'Terminées', statuts: ['Terminée'] },
-  { nom: 'À vérifier', statuts: ['Interrompue', 'Non confirmée'] },
-]
+function formatDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('fr-FR', {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
+}
 
-function Missions() {
-  const [missions, setMissions] = useState(missionsInitiales)
-  const [ongletActif, setOngletActif] = useState('Toutes')
+// --- Ligne du tableau, avec ses propres boutons d'action ---------------
 
-  // États du formulaire « Planification rapide »
-  const [nom, setNom] = useState('Relevé d’humidité')
-  const [parcelle, setParcelle] = useState('Zone A · Maïs')
+function LigneMission({ mission, nomParcelle }) {
+  const demarrer = useDemarrerMission(mission.mission_id);
+  const interrompre = useInterrompreMission(mission.mission_id);
+  const terminer = useTerminerMission(mission.mission_id);
+  const enAction = demarrer.isPending || interrompre.isPending || terminer.isPending;
 
-  const onglet = onglets.find((o) => o.nom === ongletActif)
+  const { faits, total, pct } = progression(mission);
+
+  const actions =
+    mission.statut === 'planifiee' ? (
+      <button className="bouton-petit" onClick={() => demarrer.mutate()} disabled={enAction}>
+        Démarrer
+      </button>
+    ) : mission.statut === 'en_cours' ? (
+      <>
+        <button className="bouton-petit" onClick={() => terminer.mutate()} disabled={enAction}>
+          Terminer
+        </button>
+        <button className="bouton-petit" onClick={() => interrompre.mutate()} disabled={enAction}>
+          Interrompre
+        </button>
+      </>
+    ) : (
+      <span className="badge">—</span>
+    );
+
+  return (
+    <tr>
+      <td>
+        <strong>Relevé d’humidité</strong>
+        <small>MIS-{mission.mission_id}</small>
+      </td>
+      <td>{nomParcelle}</td>
+      <td>{formatDate(mission.date_debut ?? mission.date_creation)}</td>
+      <td>{pct} % · {faits} / {total} étapes</td>
+      <td><StatusBadge statut={LIBELLES_STATUT[mission.statut] ?? mission.statut} /></td>
+      <td>{actions}</td>
+    </tr>
+  );
+}
+
+// --- Page --------------------------------------------------------------
+
+export default function Missions() {
+  const missions = useMissions();
+  const parcelles = useParcelles();
+
+  const [ongletActif, setOngletActif] = useState('Toutes');
+  const [parcelleId, setParcelleId] = useState('');
+  const [zonesChoisies, setZonesChoisies] = useState([]);
+
+  const zones = useZones(parcelleId ? { parcelle: parcelleId } : {});
+  const creation = useCreerMission();
+  const etat = etatRequete(missions);
+
+  // Résolution des noms de parcelles (pour éviter les IDs dans le tableau)
+  const nomsParcelles = Object.fromEntries(
+    (parcelles.data ?? []).map((p) => [p.parcelle_id, p.nom])
+  );
+
+  const onglet = ONGLETS.find((o) => o.nom === ongletActif);
+  const missionsListe = missions.data ?? [];
   const missionsAffichees = onglet.statuts
-    ? missions.filter((m) => onglet.statuts.includes(m.statut))
-    : missions
+    ? missionsListe.filter((m) => onglet.statuts.includes(m.statut))
+    : missionsListe;
 
-  function compter(o) {
-    return o.statuts
-      ? missions.filter((m) => o.statuts.includes(m.statut)).length
-      : missions.length
-  }
+  const compter = (o) =>
+    o.statuts ? missionsListe.filter((m) => o.statuts.includes(m.statut)).length : missionsListe.length;
 
-  function changerStatut(id, nouveauStatut) {
-    setMissions(
-      missions.map((m) => (m.id === id ? { ...m, statut: nouveauStatut } : m))
-    )
-  }
+  const missionEnCours = missionsListe.find((m) => m.statut === 'en_cours');
 
-  function planifier() {
-    const numero = 100 + missions.length + 1
-    const nouvelle = {
-      id: `MIS-${numero}`,
-      nom,
-      robot: 'RB-01',
-      parcelle,
-      depart: 'Aujourd’hui',
-      faits: 0,
-      total: 8,
-      statut: 'Planifiée',
-    }
-    setMissions([...missions, nouvelle])
-  }
+  const cocherZone = (id) =>
+    setZonesChoisies((prev) =>
+      prev.includes(id) ? prev.filter((z) => z !== id) : [...prev, id]
+    );
 
-  const enCours = missions.find((m) => m.statut === 'En cours')
+  const planifier = () => {
+    if (!parcelleId || zonesChoisies.length === 0) return;
+    creation.mutate(
+      {
+        parcelle: Number(parcelleId),
+        utilisateur: null,
+        etapes: zonesChoisies.map((zoneId, i) => ({
+          numero_ordre: i + 1,
+          zone: zoneId,
+        })),
+      },
+      {
+        onSuccess: () => {
+          setZonesChoisies([]);
+        },
+      }
+    );
+  };
 
   return (
     <div>
@@ -64,17 +145,27 @@ function Missions() {
 
       {/* Carte de la mission en cours */}
       <div className="carte-mission">
-        {enCours ? (
+        {missionEnCours ? (
           <>
             <div className="carte-mission-haut">
               <div>
-                <strong>{enCours.nom} · {enCours.parcelle}</strong>
-                <small>{enCours.id} · Robot {enCours.robot} · {enCours.faits} / {enCours.total} points</small>
+                <strong>
+                  Relevé d’humidité · {nomsParcelles[missionEnCours.parcelle] ?? '—'}
+                </strong>
+                <small>
+                  MIS-{missionEnCours.mission_id} ·{' '}
+                  {progression(missionEnCours).faits} / {progression(missionEnCours).total} étapes
+                </small>
               </div>
-              <span className="gros-pourcentage">{pourcentage(enCours)} %</span>
+              <span className="gros-pourcentage">
+                {progression(missionEnCours).pct} %
+              </span>
             </div>
             <div className="barre">
-              <div className="barre-remplie" style={{ width: `${pourcentage(enCours)}%` }} />
+              <div
+                className="barre-remplie"
+                style={{ width: `${progression(missionEnCours).pct}%` }}
+              />
             </div>
           </>
         ) : (
@@ -82,27 +173,64 @@ function Missions() {
         )}
       </div>
 
-      {/* Formulaire de planification rapide */}
+      {/* Formulaire de planification */}
       <div className="carte-mission">
         <strong>Planification rapide</strong>
         <div className="formulaire-ligne">
-          <select value={nom} onChange={(e) => setNom(e.target.value)}>
-            <option>Relevé d’humidité</option>
-            <option>Contrôle du sol sec</option>
-            <option>Inspection des cultures</option>
+          <select
+            value={parcelleId}
+            onChange={(e) => {
+              setParcelleId(e.target.value);
+              setZonesChoisies([]);
+            }}
+          >
+            <option value="">— Parcelle —</option>
+            {(parcelles.data ?? []).map((p) => (
+              <option key={p.parcelle_id} value={p.parcelle_id}>
+                {p.nom}
+              </option>
+            ))}
           </select>
-          <select value={parcelle} onChange={(e) => setParcelle(e.target.value)}>
-            <option>Zone A · Maïs</option>
-            <option>Zone B · Tomates</option>
-            <option>Zone C · Manioc</option>
-          </select>
-          <button className="bouton-principal" onClick={planifier}>Planifier</button>
+
+          {parcelleId && (
+            <div className="zones-champ">
+              {(zones.data ?? []).length === 0 && <small>Aucune zone.</small>}
+              {(zones.data ?? []).map((z) => (
+                <label key={z.zone_id} className="case-zone">
+                  <input
+                    type="checkbox"
+                    checked={zonesChoisies.includes(z.zone_id)}
+                    onChange={() => cocherZone(z.zone_id)}
+                  />
+                  {z.nom}
+                </label>
+              ))}
+            </div>
+          )}
+
+          <button
+            className="bouton-principal"
+            onClick={planifier}
+            disabled={creation.isPending || !parcelleId || zonesChoisies.length === 0}
+          >
+            {creation.isPending ? 'Création…' : 'Planifier'}
+          </button>
         </div>
+
+        {creation.isError && (
+          <p className="erreur">
+            {creation.error.message}
+            {creation.error.details &&
+              Object.entries(creation.error.details).map(([k, v]) => (
+                <span key={k}> — {k} : {Array.isArray(v) ? v.join(', ') : String(v)}</span>
+              ))}
+          </p>
+        )}
       </div>
 
       {/* Onglets */}
       <div className="onglets">
-        {onglets.map((o) => (
+        {ONGLETS.map((o) => (
           <button
             key={o.nom}
             className={o.nom === ongletActif ? 'onglet actif' : 'onglet'}
@@ -114,41 +242,32 @@ function Missions() {
       </div>
 
       {/* Tableau */}
-      <table className="tableau">
-        <thead>
-          <tr>
-            <th>Mission</th>
-            <th>Parcelle</th>
-            <th>Départ prévu</th>
-            <th>Progression</th>
-            <th>Statut</th>
-            <th>Actions (test)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {missionsAffichees.map((m) => (
-            <tr key={m.id}>
-              <td>
-                <strong>{m.nom}</strong>
-                <small>{m.id} · Robot {m.robot}</small>
-              </td>
-              <td>{m.parcelle}</td>
-              <td>{m.depart}</td>
-              <td>{pourcentage(m)} % · {m.faits} / {m.total} points</td>
-              <td><StatusBadge statut={m.statut} /></td>
-              <td>
-                {transitions[m.statut].map((s) => (
-                  <button key={s} className="bouton-petit" onClick={() => changerStatut(m.id, s)}>
-                    → {s}
-                  </button>
-                ))}
-              </td>
+      {etat === 'chargement' && <p>Chargement…</p>}
+      {etat === 'erreur' && <p className="erreur">{missions.error.message}</p>}
+      {etat === 'vide' && <p>Aucune mission.</p>}
+      {etat === 'succes' && (
+        <table className="tableau">
+          <thead>
+            <tr>
+              <th>Mission</th>
+              <th>Parcelle</th>
+              <th>Départ prévu</th>
+              <th>Progression</th>
+              <th>Statut</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {missionsAffichees.map((m) => (
+              <LigneMission
+                key={m.mission_id}
+                mission={m}
+                nomParcelle={nomsParcelles[m.parcelle] ?? `Parcelle #${m.parcelle}`}
+              />
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
-  )
+  );
 }
-
-export default Missions
