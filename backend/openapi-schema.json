@@ -1,0 +1,2363 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "API RoboAgri-Kin",
+        "version": "1.0.0",
+        "description": "\n    API REST pour la gestion des parcelles, missions de robot et irrigation.\n\n    **Fonctionnalités**\n    - Suivi des parcelles et zones de culture\n    - Planification et suivi des missions du robot\n    - Collecte et analyse des mesures d'humidité\n    - Recommandations et interventions d'irrigation\n    ",
+        "contact": {
+            "name": "Équipe RoboAgri-Kin",
+            "email": "unniekang100@gmail.com"
+        },
+        "license": {
+            "name": "Interne – usage pédagogique"
+        }
+    },
+    "paths": {
+        "/api/v1/auth/connexion/": {
+            "post": {
+                "operationId": "v1_auth_connexion_create",
+                "description": "POST /auth/connexion/ -> jetons d'accès et de rafraîchissement.",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/moi/": {
+            "get": {
+                "operationId": "v1_auth_moi_retrieve",
+                "description": "GET /auth/moi/ : profil courant. PATCH /auth/moi/ : modifier prenom/nom/email.",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1_auth_moi_partial_update",
+                "description": "GET /auth/moi/ : profil courant. PATCH /auth/moi/ : modifier prenom/nom/email.",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/rafraichir/": {
+            "post": {
+                "operationId": "v1_auth_rafraichir_create",
+                "description": "POST /auth/rafraichir/ -> nouveau jeton d'accès.",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {}
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/cultures/": {
+            "get": {
+                "operationId": "v1_cultures_list",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Culture"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1_cultures_create",
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Culture"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Culture"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Culture"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Culture"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/cultures/{culture_id}/": {
+            "get": {
+                "operationId": "v1_cultures_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "culture_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this culture.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Culture"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1_cultures_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "culture_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this culture.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Culture"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Culture"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Culture"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Culture"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1_cultures_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "culture_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this culture.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedCulture"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedCulture"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedCulture"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Culture"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1_cultures_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "culture_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this culture.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/decisions/": {
+            "get": {
+                "operationId": "v1_decisions_list",
+                "description": "Décisions d'irrigation. Filtres : ?zone=3&statut=recommandee&du=...&au=...",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedDecisionList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/decisions/{id}/": {
+            "get": {
+                "operationId": "v1_decisions_retrieve",
+                "description": "Décisions d'irrigation. Filtres : ?zone=3&statut=recommandee&du=...&au=...",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Decision"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/incidents/": {
+            "get": {
+                "operationId": "v1_incidents_list",
+                "description": "Filtres : /api/v1/incidents/?mission=12&type_incident=obstacle&du=...&au=...",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedIncidentList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/incidents/{id}/": {
+            "get": {
+                "operationId": "v1_incidents_retrieve",
+                "description": "Filtres : /api/v1/incidents/?mission=12&type_incident=obstacle&du=...&au=...",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Incident"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/irrigations/": {
+            "get": {
+                "operationId": "v1_irrigations_list",
+                "description": "Historique des interventions + saisie d'une intervention manuelle.",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedIrrigationList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1_irrigations_create",
+                "description": "POST /irrigations/ : intervention manuelle (403 ARROSAGE_INTERDIT si refusée).",
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Irrigation"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Irrigation"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Irrigation"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Irrigation"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/irrigations/{id}/": {
+            "get": {
+                "operationId": "v1_irrigations_retrieve",
+                "description": "Historique des interventions + saisie d'une intervention manuelle.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Irrigation"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/irrigations/seuils/": {
+            "get": {
+                "operationId": "v1_irrigations_seuils_retrieve",
+                "description": "GET /irrigations/seuils/ : seuils d'humidité de chaque zone du user.",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Irrigation"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/mesures/": {
+            "get": {
+                "operationId": "v1_mesures_list",
+                "description": "Filtres : /api/v1/mesures/?zone=3&mission=12&statut=valide&du=2026-11-01&au=2026-11-08",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedMesureList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/mesures/{id}/": {
+            "get": {
+                "operationId": "v1_mesures_retrieve",
+                "description": "Filtres : /api/v1/mesures/?zone=3&mission=12&statut=valide&du=2026-11-01&au=2026-11-08",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Mesure"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/missions/": {
+            "get": {
+                "operationId": "v1_missions_list",
+                "description": "Pas de modification ni de suppression libre : le statut change seulement\npar les actions ci-dessous, pour éviter un état incohérent.",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Mission"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1_missions_create",
+                "description": "Pas de modification ni de suppression libre : le statut change seulement\npar les actions ci-dessous, pour éviter un état incohérent.",
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Mission"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/missions/{id}/": {
+            "get": {
+                "operationId": "v1_missions_retrieve",
+                "description": "Pas de modification ni de suppression libre : le statut change seulement\npar les actions ci-dessous, pour éviter un état incohérent.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Mission"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/missions/{id}/demarrer/": {
+            "post": {
+                "operationId": "v1_missions_demarrer_create",
+                "description": "Pas de modification ni de suppression libre : le statut change seulement\npar les actions ci-dessous, pour éviter un état incohérent.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Mission"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/missions/{id}/interrompre/": {
+            "post": {
+                "operationId": "v1_missions_interrompre_create",
+                "description": "Pas de modification ni de suppression libre : le statut change seulement\npar les actions ci-dessous, pour éviter un état incohérent.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Mission"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/missions/{id}/terminer/": {
+            "post": {
+                "operationId": "v1_missions_terminer_create",
+                "description": "Pas de modification ni de suppression libre : le statut change seulement\npar les actions ci-dessous, pour éviter un état incohérent.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Mission"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Mission"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/parcelles/": {
+            "get": {
+                "operationId": "v1_parcelles_list",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Parcelle"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1_parcelles_create",
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Parcelle"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Parcelle"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Parcelle"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Parcelle"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/parcelles/{id}/": {
+            "get": {
+                "operationId": "v1_parcelles_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Parcelle"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1_parcelles_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Parcelle"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Parcelle"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Parcelle"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Parcelle"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1_parcelles_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedParcelle"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedParcelle"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedParcelle"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Parcelle"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1_parcelles_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/robot/messages/": {
+            "post": {
+                "operationId": "v1_robot_messages_create",
+                "description": "POST /robot/messages/ : tous les types de messages (mesure, etat, incident).\n\n201 : message traité. 200 avec \"deja_recu\": true : message déjà connu.\nUne mesure invalide donne aussi 201 (avec \"valide\": false et un incident).",
+                "tags": [
+                    "v1"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/robot/mission-suivante/": {
+            "get": {
+                "operationId": "v1_robot_mission_suivante_retrieve",
+                "description": "GET /robot/mission-suivante/ : mission à exécuter, ou 204 s'il n'y en a pas.",
+                "tags": [
+                    "v1"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/zones/": {
+            "get": {
+                "operationId": "v1_zones_list",
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Zone"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "v1_zones_create",
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Zone"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Zone"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Zone"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Zone"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/zones/{id}/": {
+            "get": {
+                "operationId": "v1_zones_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Zone"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "v1_zones_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Zone"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Zone"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Zone"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Zone"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "v1_zones_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedZone"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedZone"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedZone"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Zone"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "v1_zones_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/zones/{zone_id}/decision/": {
+            "get": {
+                "operationId": "v1_zones_decision_retrieve",
+                "description": "GET /zones/{id}/decision/ : décision actuelle d'une zone.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "zone_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "v1"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Culture": {
+                "type": "object",
+                "properties": {
+                    "culture_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "nom": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "variete": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 100
+                    }
+                },
+                "required": [
+                    "culture_id",
+                    "nom"
+                ]
+            },
+            "Decision": {
+                "type": "object",
+                "properties": {
+                    "decision_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "zone": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "type_decision": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/TypeDecisionEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "action": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "justification": {
+                        "type": "string",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "humidite_moyenne": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "seuil_min_applique": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$",
+                        "readOnly": true
+                    },
+                    "seuil_max_applique": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$",
+                        "readOnly": true
+                    },
+                    "statut": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/DecisionStatutEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "date_decision": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "analyse": {
+                        "type": "integer",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "action",
+                    "analyse",
+                    "date_decision",
+                    "decision_id",
+                    "humidite_moyenne",
+                    "justification",
+                    "seuil_max_applique",
+                    "seuil_min_applique",
+                    "statut",
+                    "type_decision",
+                    "zone"
+                ]
+            },
+            "DecisionStatutEnum": {
+                "enum": [
+                    "recommandee",
+                    "autorisee",
+                    "refusee"
+                ],
+                "type": "string",
+                "description": "* `recommandee` - Recommandée\n* `autorisee` - Autorisée\n* `refusee` - Refusée"
+            },
+            "Etape": {
+                "type": "object",
+                "properties": {
+                    "etape_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "numero_ordre": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "zone": {
+                        "type": "integer"
+                    },
+                    "statut": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Statut4b1Enum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "date_debut": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "date_fin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "date_debut",
+                    "date_fin",
+                    "etape_id",
+                    "numero_ordre",
+                    "statut",
+                    "zone"
+                ]
+            },
+            "Incident": {
+                "type": "object",
+                "properties": {
+                    "incident_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "type_incident": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/TypeIncidentEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "date_incident": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "mission": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "mesures": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "date_incident",
+                    "incident_id",
+                    "mesures",
+                    "mission",
+                    "type_incident"
+                ]
+            },
+            "Irrigation": {
+                "type": "object",
+                "properties": {
+                    "irrigation_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "zone": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "automatique": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "statut": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/Statut4b1Enum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "duree_secondes": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "volume_ml": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "date_debut": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "date_fin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "decision": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "utilisateur": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "automatique",
+                    "date_debut",
+                    "date_fin",
+                    "decision",
+                    "duree_secondes",
+                    "irrigation_id",
+                    "statut",
+                    "utilisateur",
+                    "volume_ml",
+                    "zone"
+                ]
+            },
+            "Mesure": {
+                "type": "object",
+                "properties": {
+                    "mesure_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "mission": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "zone": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "etape": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "numero_point": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "numero_lecture": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "valeur_brute": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "valeur_humidite": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "date_heure_mesure": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "statut": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/MesureStatutEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "incident": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "analyse": {
+                        "type": "integer",
+                        "readOnly": true,
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "analyse",
+                    "date_heure_mesure",
+                    "etape",
+                    "incident",
+                    "message",
+                    "mesure_id",
+                    "mission",
+                    "numero_lecture",
+                    "numero_point",
+                    "statut",
+                    "valeur_brute",
+                    "valeur_humidite",
+                    "zone"
+                ]
+            },
+            "MesureStatutEnum": {
+                "enum": [
+                    "valide",
+                    "invalide",
+                    "manquante"
+                ],
+                "type": "string",
+                "description": "* `valide` - Valide\n* `invalide` - Invalide\n* `manquante` - Manquante"
+            },
+            "Mission": {
+                "type": "object",
+                "properties": {
+                    "mission_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "statut": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/MissionStatutEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "date_creation": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "date_debut": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "date_fin": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "utilisateur": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "parcelle": {
+                        "type": "integer"
+                    },
+                    "etapes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Etape"
+                        }
+                    }
+                },
+                "required": [
+                    "date_creation",
+                    "date_debut",
+                    "date_fin",
+                    "etapes",
+                    "mission_id",
+                    "parcelle",
+                    "statut"
+                ]
+            },
+            "MissionStatutEnum": {
+                "enum": [
+                    "planifiee",
+                    "en_cours",
+                    "terminee",
+                    "interrompue",
+                    "non_confirmee"
+                ],
+                "type": "string",
+                "description": "* `planifiee` - Planifiée\n* `en_cours` - En cours\n* `terminee` - Terminée\n* `interrompue` - Interrompue\n* `non_confirmee` - Non confirmée"
+            },
+            "PaginatedDecisionList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Decision"
+                        }
+                    }
+                }
+            },
+            "PaginatedIncidentList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Incident"
+                        }
+                    }
+                }
+            },
+            "PaginatedIrrigationList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Irrigation"
+                        }
+                    }
+                }
+            },
+            "PaginatedMesureList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Mesure"
+                        }
+                    }
+                }
+            },
+            "Parcelle": {
+                "type": "object",
+                "properties": {
+                    "parcelle_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "nom": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "superficie": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "utilisateur": {
+                        "type": "integer"
+                    },
+                    "zones": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Zone"
+                        },
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "nom",
+                    "parcelle_id",
+                    "utilisateur",
+                    "zones"
+                ]
+            },
+            "PatchedCulture": {
+                "type": "object",
+                "properties": {
+                    "culture_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "nom": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "variete": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 100
+                    }
+                }
+            },
+            "PatchedParcelle": {
+                "type": "object",
+                "properties": {
+                    "parcelle_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "nom": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "superficie": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "utilisateur": {
+                        "type": "integer"
+                    },
+                    "zones": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Zone"
+                        },
+                        "readOnly": true
+                    }
+                }
+            },
+            "PatchedZone": {
+                "type": "object",
+                "properties": {
+                    "zone_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "nom": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "superficie": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "humidite_minimum": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$"
+                    },
+                    "humidite_maximum": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$"
+                    },
+                    "geometrie_zone": {
+                        "nullable": true
+                    },
+                    "irrigation_auto_active": {
+                        "type": "boolean"
+                    },
+                    "parcelle": {
+                        "type": "integer"
+                    },
+                    "cultures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Culture"
+                        },
+                        "readOnly": true
+                    }
+                }
+            },
+            "Statut4b1Enum": {
+                "enum": [
+                    "planifiee",
+                    "en_cours",
+                    "terminee",
+                    "interrompue"
+                ],
+                "type": "string",
+                "description": "* `planifiee` - Planifiée\n* `en_cours` - En cours\n* `terminee` - Terminée\n* `interrompue` - Interrompue"
+            },
+            "TypeDecisionEnum": {
+                "enum": [
+                    "humidite_suffisante",
+                    "humidite_insuffisante",
+                    "mesure_invalide"
+                ],
+                "type": "string",
+                "description": "* `humidite_suffisante` - Humidité suffisante\n* `humidite_insuffisante` - Humidité insuffisante\n* `mesure_invalide` - Mesure invalide"
+            },
+            "TypeIncidentEnum": {
+                "enum": [
+                    "obstacle",
+                    "capteur_defaillant",
+                    "perte_communication",
+                    "mesure_invalide"
+                ],
+                "type": "string",
+                "description": "* `obstacle` - Obstacle\n* `capteur_defaillant` - Capteur défaillant\n* `perte_communication` - Perte de communication\n* `mesure_invalide` - Mesure invalide"
+            },
+            "Zone": {
+                "type": "object",
+                "properties": {
+                    "zone_id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "nom": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "superficie": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "humidite_minimum": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$"
+                    },
+                    "humidite_maximum": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$"
+                    },
+                    "geometrie_zone": {
+                        "nullable": true
+                    },
+                    "irrigation_auto_active": {
+                        "type": "boolean"
+                    },
+                    "parcelle": {
+                        "type": "integer"
+                    },
+                    "cultures": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Culture"
+                        },
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "cultures",
+                    "humidite_maximum",
+                    "humidite_minimum",
+                    "nom",
+                    "parcelle",
+                    "zone_id"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "jwtAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "auth",
+            "description": "Authentification et profil"
+        },
+        {
+            "name": "parcelles",
+            "description": "Parcelles et cultures"
+        },
+        {
+            "name": "zones",
+            "description": "Zones de culture"
+        },
+        {
+            "name": "cultures",
+            "description": "Cultures"
+        },
+        {
+            "name": "missions",
+            "description": "Missions du robot"
+        },
+        {
+            "name": "mesures",
+            "description": "Mesures d'humidité"
+        },
+        {
+            "name": "decisions",
+            "description": "Décisions d'irrigation"
+        },
+        {
+            "name": "irrigations",
+            "description": "Interventions d'irrigation"
+        },
+        {
+            "name": "incidents",
+            "description": "Incidents signalés"
+        },
+        {
+            "name": "robot",
+            "description": "Endpoints pour le robot ESP32"
+        }
+    ]
+}
