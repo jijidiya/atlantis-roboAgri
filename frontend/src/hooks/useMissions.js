@@ -10,10 +10,15 @@ export const clesMissions = {
 
 // --- Lecture -----------------------------------------------------------
 
-export function useMissions(filtres = {}) {
+export function useMissions({ statut, parcelle } = {}) {
+  const params = new URLSearchParams();
+  if (statut) params.set('statut', statut);
+  if (parcelle) params.set('parcelle', parcelle);
+  const suffixe = params.toString() ? `?${params}` : '';
+
   return useQuery({
-    queryKey: clesMissions.liste(filtres),
-    queryFn: () => api.get('/missions/'),
+    queryKey: clesMissions.liste({ statut, parcelle }),
+    queryFn: () => api.get(`/missions/${suffixe}`),
   });
 }
 

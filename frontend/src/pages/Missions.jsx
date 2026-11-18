@@ -87,10 +87,15 @@ function LigneMission({ mission, nomParcelle }) {
 // --- Page --------------------------------------------------------------
 
 export default function Missions() {
-  const missions = useMissions();
+  const [ongletActif, setOngletActif] = useState('Toutes');
+  const onglet = ONGLETS.find((o) => o.nom === ongletActif);
+  // Le serveur ne filtre que sur UN statut : pour « À vérifier » (2 statuts), on demande tout.
+  const statutServeur = onglet.statuts?.length === 1 ? onglet.statuts[0] : undefined;
+
+  const toutes = useMissions(); // sert aux compteurs des onglets
+  const missions = useMissions({ statut: statutServeur }); // la liste affichée
   const parcelles = useParcelles();
 
-  const [ongletActif, setOngletActif] = useState('Toutes');
   const [parcelleId, setParcelleId] = useState('');
   const [zonesChoisies, setZonesChoisies] = useState([]);
 
@@ -103,16 +108,19 @@ export default function Missions() {
     (parcelles.data ?? []).map((p) => [p.parcelle_id, p.nom])
   );
 
-  const onglet = ONGLETS.find((o) => o.nom === ongletActif);
+  const toutesListe = toutes.data ?? [];
   const missionsListe = missions.data ?? [];
+  // Le serveur a déjà filtré sur un statut ; ce second filtre sert à « À vérifier ».
   const missionsAffichees = onglet.statuts
     ? missionsListe.filter((m) => onglet.statuts.includes(m.statut))
     : missionsListe;
 
   const compter = (o) =>
-    o.statuts ? missionsListe.filter((m) => o.statuts.includes(m.statut)).length : missionsListe.length;
+    o.statuts
+      ? toutesListe.filter((m) => o.statuts.includes(m.statut)).length
+      : toutesListe.length;
 
-  const missionEnCours = missionsListe.find((m) => m.statut === 'en_cours');
+  const missionEnCours = toutesListe.find((m) => m.statut === 'en_cours');
 
   const cocherZone = (id) =>
     setZonesChoisies((prev) =>
