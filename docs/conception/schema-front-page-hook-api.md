@@ -64,7 +64,7 @@ Réglages communs (`api/queryClient.js`) : données considérées fraîches 30 s
 | Hook | Clé de requête | Appel | Format supposé par la page | Rafraîchissement |
 |---|---|---|---|---|
 | `useZones()` | `['zones','liste',{}]` | GET `/zones/` | tableau brut | aucun |
-| `useDecisionCourante(zoneId)` | à compléter | à compléter | à compléter | à compléter |
+| `useDecisionCourante(zoneId)` | `['decisions','courante',zoneId]` | GET `/zones/{id}/decision/` | objet (`type_decision`, `humidite_moyenne`, `justification`) | aucun (données fraîches 30 s) |
 | `useIrrigations()` | `['irrigations','liste',{zone,statut}]` | GET `/irrigations/` | paginé (`results`) | aucun |
 | `useModifierSeuilsZones()` | mutation | PATCH `/zones/{id}/` (un appel par zone modifiée) avec `{humidite_minimum, humidite_maximum}` | n/a | invalide zones et parcelles |
 | `useCreerIrrigation()` | mutation | POST `/irrigations/` avec `{zone, duree_secondes}` (403 = arrosage refusé) | n/a | invalide irrigations et décisions |
@@ -76,3 +76,5 @@ Réglages communs (`api/queryClient.js`) : données considérées fraîches 30 s
 - `useMissions(filtres)` met les filtres dans la clé mais ne les envoie pas au backend.
 - `useSeuilsZones` (GET `/irrigations/seuils/`) n'est utilisé par aucune page.
 - `api/client.js` et `api/missions.js` ne sont plus utilisés : à supprimer.
+- `useMesures` restait désactivé pour Capteurs : corrigé avec l'option `toutes`.
+- `/mesures/` est paginé (50 par page, 100 maximum) : Capteurs ne voit que les 50 mesures valides les plus récentes.
