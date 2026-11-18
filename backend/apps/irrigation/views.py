@@ -81,6 +81,7 @@ class DecisionZoneView(APIView):
     """GET /zones/{id}/decision/ : décision actuelle d'une zone."""
 
     permission_classes = [IsAuthenticated]
+    serializer_class = DecisionSerializer
 
     def get(self, request, zone_id):
         # Vérifie d'abord que la zone appartient au user (sinon 404, pas 403).

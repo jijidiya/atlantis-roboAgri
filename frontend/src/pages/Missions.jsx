@@ -5,7 +5,6 @@ import { useZones } from '../hooks/useZones';
 import {
   useMissions,
   useCreerMission,
-  useDemarrerMission,
   useInterrompreMission,
   useTerminerMission,
 } from '../hooks/useMissions';
@@ -44,18 +43,15 @@ function formatDate(iso) {
 // --- Ligne du tableau, avec ses propres boutons d'action ---------------
 
 function LigneMission({ mission, nomParcelle }) {
-  const demarrer = useDemarrerMission(mission.mission_id);
   const interrompre = useInterrompreMission(mission.mission_id);
   const terminer = useTerminerMission(mission.mission_id);
-  const enAction = demarrer.isPending || interrompre.isPending || terminer.isPending;
+  const enAction = interrompre.isPending || terminer.isPending;
 
   const { faits, total, pct } = progression(mission);
 
   const actions =
     mission.statut === 'planifiee' ? (
-      <button className="bouton-petit" onClick={() => demarrer.mutate()} disabled={enAction}>
-        Démarrer
-      </button>
+      <span className="badge">En attente du robot</span>
     ) : mission.statut === 'en_cours' ? (
       <>
         <button className="bouton-petit" onClick={() => terminer.mutate()} disabled={enAction}>

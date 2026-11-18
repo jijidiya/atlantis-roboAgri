@@ -1,6 +1,8 @@
+"""Routes de l'API « communication » : endpoints réservés au robot."""
 from django.urls import path
 
-from .serializers import MessageRobotView, MissionSuivanteView
+from .views import MessageRobotView, MissionSuivanteView
+
 
 urlpatterns = [
     path("robot/messages/", MessageRobotView.as_view(), name="robot-messages"),

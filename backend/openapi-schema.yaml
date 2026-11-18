@@ -11,7 +11,7 @@ info:
     name: Équipe RoboAgri-Kin
     email: unniekang100@gmail.com
   license:
-    name: Interne – usage pédagogique
+    name: Interne – on est juste un groupe d'etudiants.
 paths:
   /api/v1/auth/connexion/:
     post:
@@ -19,11 +19,27 @@ paths:
       description: POST /auth/connexion/ -> jetons d'accès et de rafraîchissement.
       tags:
       - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Connexion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Connexion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Connexion'
+        required: true
       security:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Connexion'
+          description: ''
   /api/v1/auth/moi/:
     get:
       operationId: v1_auth_moi_retrieve
@@ -34,28 +50,63 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilisateurConnecte'
+          description: ''
     patch:
       operationId: v1_auth_moi_partial_update
       description: 'GET /auth/moi/ : profil courant. PATCH /auth/moi/ : modifier prenom/nom/email.'
       tags:
       - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUtilisateurConnecte'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUtilisateurConnecte'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUtilisateurConnecte'
       security:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilisateurConnecte'
+          description: ''
   /api/v1/auth/rafraichir/:
     post:
       operationId: v1_auth_rafraichir_create
       description: POST /auth/rafraichir/ -> nouveau jeton d'accès.
       tags:
       - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rafraichissement'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Rafraichissement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Rafraichissement'
+        required: true
       security:
       - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rafraichissement'
+          description: ''
   /api/v1/cultures/:
     get:
       operationId: v1_cultures_list
@@ -747,19 +798,6 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v1/robot/messages/:
-    post:
-      operationId: v1_robot_messages_create
-      description: |-
-        POST /robot/messages/ : tous les types de messages (mesure, etat, incident).
-
-        201 : message traité. 200 avec "deja_recu": true : message déjà connu.
-        Une mesure invalide donne aussi 201 (avec "valide": false et un incident).
-      tags:
-      - v1
-      responses:
-        '200':
-          description: No response body
   /api/v1/robot/mission-suivante/:
     get:
       operationId: v1_robot_mission_suivante_retrieve
@@ -769,7 +807,11 @@ paths:
       - v1
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+          description: ''
   /api/v1/zones/:
     get:
       operationId: v1_zones_list
@@ -923,9 +965,27 @@ paths:
       - jwtAuth: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Decision'
+          description: ''
 components:
   schemas:
+    Connexion:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        nom_utilisateur:
+          type: string
+          format: email
+        mot_de_passe:
+          type: string
+          writeOnly: true
+      required:
+      - mot_de_passe
     Culture:
       type: object
       properties:
@@ -1423,6 +1483,20 @@ components:
           items:
             $ref: '#/components/schemas/Zone'
           readOnly: true
+    PatchedUtilisateurConnecte:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        nom:
+          type: string
+        prenom:
+          type: string
+        role:
+          type: string
     PatchedZone:
       type: object
       properties:
@@ -1456,6 +1530,13 @@ components:
           items:
             $ref: '#/components/schemas/Culture'
           readOnly: true
+    Rafraichissement:
+      type: object
+      properties:
+        rafraichissement:
+          type: string
+      required:
+      - rafraichissement
     Statut4b1Enum:
       enum:
       - planifiee
@@ -1490,6 +1571,26 @@ components:
         * `capteur_defaillant` - Capteur défaillant
         * `perte_communication` - Perte de communication
         * `mesure_invalide` - Mesure invalide
+    UtilisateurConnecte:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        nom:
+          type: string
+        prenom:
+          type: string
+        role:
+          type: string
+      required:
+      - email
+      - id
+      - nom
+      - prenom
+      - role
     Zone:
       type: object
       properties:
