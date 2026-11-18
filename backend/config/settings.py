@@ -109,7 +109,34 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "API RoboAgri-Kin",
+    "DESCRIPTION": """
+    API REST pour la gestion des parcelles, missions de robot et irrigation.
+
+    **Fonctionnalités**
+    - Suivi des parcelles et zones de culture
+    - Planification et suivi des missions du robot
+    - Collecte et analyse des mesures d'humidité
+    - Recommandations et interventions d'irrigation
+    """,
     "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "CONTACT": {
+        "name": "Équipe RoboAgri-Kin",
+        "email": "unniekang100@gmail.com",
+    },
+    "LICENSE": {"name": "Interne – usage pédagogique"},
+    "TAGS": [
+        {"name": "auth", "description": "Authentification et profil"},
+        {"name": "parcelles", "description": "Parcelles et cultures"},
+        {"name": "zones", "description": "Zones de culture"},
+        {"name": "cultures", "description": "Cultures"},
+        {"name": "missions", "description": "Missions du robot"},
+        {"name": "mesures", "description": "Mesures d'humidité"},
+        {"name": "decisions", "description": "Décisions d'irrigation"},
+        {"name": "irrigations", "description": "Interventions d'irrigation"},
+        {"name": "incidents", "description": "Incidents signalés"},
+        {"name": "robot", "description": "Endpoints pour le robot ESP32"},
+    ],
 }
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=["http://localhost:5173"])
