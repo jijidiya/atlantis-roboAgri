@@ -16,6 +16,8 @@ from .serializers import (
 class ConnexionAPIView(APIView):
     """POST /auth/connexion/ -> jetons d'accès et de rafraîchissement."""
 
+    serializer_class = ConnexionSerializer
+
     permission_classes = [AllowAny]
     # Aucune authentification : un ancien jeton expiré dans l'en-tête ne doit pas
     # faire échouer la connexion (DRF le vérifierait avant d'entrer dans la vue).
@@ -40,6 +42,8 @@ class ConnexionAPIView(APIView):
 class RafraichissementAPIView(APIView):
     """POST /auth/rafraichir/ -> nouveau jeton d'accès."""
 
+    serializer_class = RafraichissementSerializer
+
     permission_classes = [AllowAny]
     # Le frontend envoie ici son jeton d'accès EXPIRÉ : il ne faut pas le contrôler,
     # sinon le rafraîchissement serait toujours refusé en 401.
@@ -52,6 +56,8 @@ class RafraichissementAPIView(APIView):
 
 class MoiAPIView(APIView):
     """GET /auth/moi/ : profil courant. PATCH /auth/moi/ : modifier prenom/nom/email."""
+
+    serializer_class = UtilisateurConnecteSerializer
 
     permission_classes = [IsAuthenticated]
 
