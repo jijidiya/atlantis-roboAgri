@@ -1,7 +1,7 @@
 # Suivi des dépenses — RoboAgri-Kin « Atlantis »
 
 Projet de Programmation III · L3 Sciences Informatiques · Université Catholique du Congo
-Dernière mise à jour : 09/11/2026
+Dernière mise à jour : 14/11/2026
 
 ## Règles de suivi
 
@@ -27,22 +27,23 @@ Dernière mise à jour : 09/11/2026
 | 03/11/2026 | 5.00 | Fils Dupont (M-M, M-F) | Binôme A |
 | 07/11/2026 | 1.74 | Condensateurs 1000uF x2 | Binôme A |
 | 07/11/2026 | 2.60 | Li-ion 18650 x2 | Binôme A |
-| 07/11/2026 | 2.17 | Câble USB type C | Binôme A |
+| 14/11/2026 | 4.34 | Câble USB type C | Binôme A |
 | 07/11/2026 | 8.00 | Fils Dupont (F-F) | Binôme A |
 | 07/11/2026 | 4.00 | Slot holder | Binôme A |
 | 09/11/2026 | 3.39 | Slot holder | Binôme A |
 | 12/11/2026 | 1.09 | Ruban adhésif double face 2x | Binôme A |
 | 13/11/2026 | 1.96 | Fer à souder + étain 1m | Binôme A |
+| 14/11/2026 | 3.04 | Marqueur indélébile x2 | Binôme A |
 
 
 ## 2. Récapitulatif
 
 | Élément | Montant (USD) |
 |---|---|
-Frais de transport | 9.64 |
-| Total dépensé | 137,01 |
+Frais de transport | 10.29 |
+| Total dépensé | 142,87 |
 | Budget indicatif du prototype | 200  |
-| Reste disponible | 62,99 |
+| Reste disponible | 57,13 |
 
 ## 3. Répartition par poste
 
