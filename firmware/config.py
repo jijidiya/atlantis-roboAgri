@@ -1,52 +1,34 @@
-try:
-    import secrets
-    URL_SERVEUR = secrets.API_URL
-except (ImportError, AttributeError):
-    URL_SERVEUR = "http://192.168.1.10:8000"
-CHEMIN_PING = "/api/ping/"
-CHEMIN_MISSION = "/api/robot/mission"
-CHEMIN_MESSAGES = "/api/robot/messages"
-CHEMIN_ETAT = "/api/robot/etat"
-CHEMIN_SYNC = "/api/robot/messages/sync"
+"""Configuration du firmware ESP32 — capteur d'humidité RÉSISTIF.
 
-DELAI_POLLING_S = 3          
-TIMEOUT_REQUETE_S = 5
-DELAI_CONNEXION_MAX_S = 15
-DELAI_RECONNEXION_S = 5
-SIGNAL_VIE_S = 5
-SERVEUR_NTP = "pool.ntp.org" 
-DELAIS_REESSAI_S = (3, 6, 12)  
-DELAI_REESSAI_MAX_S = 30
+⚠️ Contient des secrets (Wi-Fi, jeton robot). Ignoré par Git.
+   Modèle versionné : `config.example.py`.
+"""
+WIFI_SSID = "MonHotspot"
+WIFI_PASSWORD = "MotDePasseWifi"
+
+ADRESSE_API = "http:// 192.168.1.244:8000"
+
+CHEMIN_MISSION = "/api/v1/robot/mission-suivante/"
+CHEMIN_MESSAGES = "/api/v1/robot/messages/"
 
 
-TAILLE_MAX_FILE = 100        
-TAILLE_PAQUET_SYNC = 20      
-PAS_COMPTEUR = 10            
-FICHIER_COMPTEUR = "compteur.txt"
+JETON_ROBOT = "12340000"
 
 
-BROCHE_HUMIDITE = 34         
-BROCHE_ALIM_HUMIDITE = 32    
-DELAI_STABILISATION_MS = 200 
-NB_LECTURES = 5              
-BRUT_MIN_VALIDE = 0          
-BRUT_MAX_VALIDE = 4095       
-BRUT_SEC = 2800              
-BRUT_EAU = 1200
+DELAI_ATTENTE = 20   
+DELAI_POLLING = 3      
+PIN_CAPTEUR = 34
+PIN_ALIMENTATION = 25
 
-BROCHE_BATTERIE = 35         
-RAPPORT_DIVISEUR = (100 + 47) / 47   
-TENSION_BATT_MIN = 4.4       
-TENSION_BATT_MAX = 6.4       
-SEUIL_BATTERIE_FAIBLE = 20  
-NB_LECTURES_BATT = 5         
+DELAI_STABILISATION_MS = 300
+NOMBRE_ECHANTILLONS = 10
 
 
-TYPES_MESSAGE = ("mission_recue", "etape_atteinte", "mesure",
-                 "changement_etat", "incident")
-ETATS_ROBOT = ("repos", "en_deplacement", "en_mesure",
-               "arret", "erreur", "hors_ligne")
-GRAVITES_INCIDENT = ("info", "avertissement", "bloquant")
+DELAI_ECHANTILLON_MS = 30
+
+VALEUR_SEC = 3500      
+VALEUR_HUMIDE = 1200   
 
 
-INTERVALLE_MESURE_S = 10     
+NOMBRE_POINTS = 3
+NOMBRE_LECTURES = 3
