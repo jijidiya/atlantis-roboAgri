@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import StatCard from '../components/StatCard';
+import EtatVide from '../components/EtatVide';
 import { useIncidents } from '../hooks/useIncidents';
 import { useMissions } from '../hooks/useMissions';
 import { etatRequete } from '../hooks/etatRequete';
@@ -20,12 +21,15 @@ export default function Incidents() {
 
   // Polling 10 s actif (page dédiée — la donnée peut changer à tout moment).
   const incidents = useIncidents(filtreType ? { type_incident: filtreType } : {});
+  // Liste sans filtre : sert aux cartes du haut, pour qu'elles ne changent pas avec l'onglet.
+  const tous = useIncidents({});
   const missions = useMissions();
 
   const etat = etatRequete(incidents);
 
   const liste = incidents.data?.results ?? [];
-  const total = incidents.data?.count ?? liste.length;
+  const listeTous = tous.data?.results ?? [];
+  const total = tous.data?.count ?? listeTous.length;
 
   const missionsParId = useMemo(() => {
     const map = new Map();
@@ -35,7 +39,7 @@ export default function Incidents() {
 
   const selection = liste.find((i) => i.incident_id === selectionId);
 
-  const compterType = (cle) => liste.filter((i) => i.type_incident === cle).length;
+  const compterType = (cle) => listeTous.filter((i) => i.type_incident === cle).length;
 
   return (
     <div>
@@ -80,10 +84,18 @@ export default function Incidents() {
         ))}
       </div>
 
-      {etat === 'chargement' && <p>Chargement…</p>}
-      {etat === 'erreur' && <p className="erreur">{incidents.error.message}</p>}
+      {etat === 'chargement' && <EtatVide type="chargement" />}
+      {etat === 'erreur' && (
+        <EtatVide
+          type="erreur"
+          message={incidents.error.message}
+          onReessayer={() => incidents.refetch()}
+        />
+      )}
       {etat === 'vide' && (
-        <p style={{ padding: '1rem', color: '#888' }}>Aucun incident.</p>
+        <EtatVide
+          message={filtreType ? 'Aucun incident de ce type.' : 'Aucun incident enregistré.'}
+        />
       )}
       {etat === 'succes' && (
         <div className="incidents-mise-en-page">

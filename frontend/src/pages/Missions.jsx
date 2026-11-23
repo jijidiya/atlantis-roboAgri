@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import EtatVide from '../components/EtatVide';
 import StatusBadge from '../components/StatusBadge';
 import { useParcelles } from '../hooks/useParcelles';
 import { useZones } from '../hooks/useZones';
@@ -246,9 +247,19 @@ export default function Missions() {
       </div>
 
       {/* Tableau */}
-      {etat === 'chargement' && <p>Chargement…</p>}
-      {etat === 'erreur' && <p className="erreur">{missions.error.message}</p>}
-      {etat === 'vide' && <p>Aucune mission.</p>}
+            {etat === 'chargement' && <EtatVide type="chargement" />}
+      {etat === 'erreur' && (
+        <EtatVide
+          type="erreur"
+          message={missions.error.message}
+          onReessayer={() => missions.refetch()}
+        />
+      )}
+      {etat === 'vide' && (
+        <EtatVide
+          message={onglet.statuts ? 'Aucune mission dans cet onglet.' : 'Aucune mission enregistrée.'}
+        />
+      )}
       {etat === 'succes' && (
         <table className="tableau">
           <thead>

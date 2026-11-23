@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import EtatVide from '../components/EtatVide';
 import { useZones, useModifierSeuilsZones } from '../hooks/useZones';
 import { useDecisionCourante } from '../hooks/useDecisions';
 import { useCreerIrrigation, useIrrigations } from '../hooks/useIrrigations';
@@ -195,9 +196,15 @@ export default function Irrigation() {
 
       {message && <p className="message">{message}</p>}
 
-      {etat === 'chargement' && <p>Chargement…</p>}
-      {etat === 'erreur' && <p className="erreur">{zones.error.message}</p>}
-      {etat === 'vide' && <p>Aucune zone.</p>}
+      {etat === 'chargement' && <EtatVide type="chargement" />}
+      {etat === 'erreur' && (
+        <EtatVide
+          type="erreur"
+          message={zones.error.message}
+          onReessayer={() => zones.refetch()}
+        />
+      )}
+      {etat === 'vide' && <EtatVide message="Aucune zone." />}
       {etat === 'succes' && (
         <div className="grille-zones">
           {zones.data.map((z) => (
@@ -212,9 +219,13 @@ export default function Irrigation() {
       )}
 
       <h2>Historique d’irrigation</h2>
-      {irrigations.isLoading && <p>Chargement…</p>}
+            {irrigations.isLoading && <EtatVide type="chargement" />}
       {irrigations.isError && (
-        <p className="erreur">{irrigations.error.message}</p>
+        <EtatVide
+          type="erreur"
+          message={irrigations.error.message}
+          onReessayer={() => irrigations.refetch()}
+        />
       )}
       {irrigations.data && (
         <table className="tableau">
