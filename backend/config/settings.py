@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "drf_spectacular",
+    "drf_spectacular_sidecar",
     "rest_framework_simplejwt",
     "rest_framework",
     "corsheaders",
@@ -109,12 +110,47 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "API RoboAgri-Kin",
+    "DESCRIPTION": """
+    API REST pour la gestion des parcelles, missions de robot et irrigation.
+
+    **Fonctionnalités**
+    - Suivi des parcelles et zones de culture
+    - Planification et suivi des missions du robot
+    - Collecte et analyse des mesures d'humidité
+    - Recommandations et interventions d'irrigation
+    """,
     "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "CONTACT": {
+        "name": "Équipe RoboAgri-Kin",
+        "email": "unniekang100@gmail.com",
+    },
+    "LICENSE": {"name": "Interne – on est juste un groupe d'etudiants."},
+    "TAGS": [
+        {"name": "auth", "description": "Authentification et profil"},
+        {"name": "parcelles", "description": "Parcelles et cultures"},
+        {"name": "zones", "description": "Zones de culture"},
+        {"name": "cultures", "description": "Cultures"},
+        {"name": "missions", "description": "Missions du robot"},
+        {"name": "mesures", "description": "Mesures d'humidité"},
+        {"name": "decisions", "description": "Décisions d'irrigation"},
+        {"name": "irrigations", "description": "Interventions d'irrigation"},
+        {"name": "incidents", "description": "Incidents signalés"},
+        {"name": "robot", "description": "Endpoints pour le robot ESP32"},
+    ],
+    "ENUM_NAME_OVERRIDES": {
+    "StatutMissionEnum": "apps.missions.models.Mission.Statut",
+    "StatutEtapeEnum": "apps.missions.models.Etape.Statut",
+    "StatutIrrigationEnum": "apps.irrigation.models.Irrigation.Statut",
+},
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVORITE_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
 }
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=["http://localhost:5173"])
 
-CLE_ROBOT = env("CLE_ROBOT", default="")   # vide = tous les appels du robot sont refusés
+CLE_ROBOT = env("CLE_ROBOT", default="12340000")   # vide = tous les appels du robot sont refusés
 
 DUREE_MAX_IRRIGATION_SECONDES = env.int("DUREE_MAX_IRRIGATION_SECONDES", default=300)  # RG18
 AGE_MAX_MESURE_SECONDES = env.int("AGE_MAX_MESURE_SECONDES", default=1800)

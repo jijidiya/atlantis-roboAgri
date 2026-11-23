@@ -54,3 +54,46 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message {self.message_id} (mission {self.mission_id})"
+
+
+class MessageRecu(models.Model):
+    """Message envoyé par le robot, identifié par son message_id unique."""
+
+    message_id = models.CharField(
+        max_length=16,
+        primary_key=True,
+        help_text="16 caractères hexadécimaux, générés par l'ESP32.",
+    )
+    num_sequence = models.IntegerField(
+        null=True, blank=True,
+        help_text="Ordre du message dans la session (peut manquer sur un Last Will).",
+    )
+    type_message = models.CharField(
+        max_length=30,
+        help_text="Type du message : mesure, etat, incident.",
+    )
+    contenu = models.JSONField(
+        help_text="Contenu brut du message (JSON), tel que reçu du robot.",
+    )
+    date_heure = models.DateTimeField(
+        auto_now_add=True,
+        help_text="Heure de réception côté serveur.",
+    )
+    mission = models.ForeignKey(
+        "missions.Mission",
+        on_delete=models.RESTRICT,
+        related_name="messages_recus",
+        help_text="Mission concernée par le message.",
+    )
+
+    class Meta:
+        verbose_name = "message reçu"
+        verbose_name_plural = "messages reçus"
+        ordering = ["-date_heure"]
+        indexes = [
+            models.Index(fields=["mission", "date_heure"]),
+            models.Index(fields=["type_message", "date_heure"]),
+        ]
+
+    def __str__(self):
+        return f"{self.message_id} ({self.type_message})"

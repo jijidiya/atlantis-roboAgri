@@ -1,42 +1,142 @@
-"""API réservée au robot (clé secrète dans l'en-tête X-Cle-Robot).
+"""Sérialiseurs de l'API « communication ».
 
-Ces vues ne font qu'appeler `handlers.traiter_message` : HTTP aujourd'hui,
-MQTT demain, le traitement reste le même.
+Validation du payload envoyé par le robot avant traitement métier.
+Le format exact est défini dans `protocole_communication.md` (document E).
+
+Note : la lecture d'un message déjà reçu (`MessageRecu`) n'est pas couverte
+ici — le modèle n'existe pas encore dans `models.py`. Quand il sera créé,
+ajouter `MessageRecuSerializer` en tête du fichier.
 """
-from rest_framework.parsers import JSONParser
-from rest_framework.response import Response
-from rest_framework.views import APIView
+import re
 
-from apps.core.permissions import EstRobot
-from apps.missions import services as missions_services
-from apps.missions.serializers import MissionSerializer
+from rest_framework import serializers
 
-from . import handlers
+from apps.missions.models import Mission
+from apps.parcelles.models import Zone
 
 
-class _VueRobot(APIView):
-    authentication_classes = []        # le robot n'a pas de jeton JWT
-    permission_classes = [EstRobot]
-    parser_classes = [JSONParser]
+# ---------------------------------------------------------------------------
+# Validation d'un message entrant (payload du robot)
+# ---------------------------------------------------------------------------
 
+class PayloadMesureSerializer(serializers.Serializer):
+    """Payload d'un message de type 'mesure'.
 
-class MessageRobotView(_VueRobot):
-    """POST /robot/messages/ : tous les types de messages (mesure, etat, incident).
-
-    201 : message traité. 200 avec "deja_recu": true : message déjà connu.
-    Une mesure invalide donne aussi 201 (avec "valide": false et un incident).
+    ⚠️ Champs à confirmer avec protocole_communication.md (E).
     """
 
-    def post(self, request):
-        resultat = handlers.traiter_message(request.data)
-        return Response(resultat.en_dict(), status=200 if resultat.deja_recu else 201)
+    zone = serializers.PrimaryKeyRelatedField(queryset=Zone.objects.all())
+    humidite_pct = serializers.DecimalField(
+        max_digits=5, decimal_places=2, min_value=0, max_value=100,
+        help_text="Humidité étalonnée en pourcentage (0–100).",
+    )
+    valeur_brute = serializers.IntegerField(
+        min_value=0,
+        help_text="Valeur ADC brute, pour diagnostic et recalcul hors ligne.",
+    )
+    numero_point = serializers.IntegerField(
+        min_value=1, max_value=3, required=False,
+        help_text="Point de collecte (1 à 3), selon RG7.",
+    )
+    numero_lecture = serializers.IntegerField(
+        min_value=1, max_value=3, required=False,
+        help_text="Lecture du point (1 à 3), selon RG7.",
+    )
 
 
-class MissionSuivanteView(_VueRobot):
-    """GET /robot/mission-suivante/ : mission à exécuter, ou 204 s'il n'y en a pas."""
+class PayloadEtatSerializer(serializers.Serializer):
+    """Payload d'un message de type 'etat'.
 
-    def get(self, request):
-        mission = missions_services.mission_suivante()
-        if mission is None:
-            return Response(status=204)
-        return Response(MissionSerializer(mission).data)
+    ⚠️ Liste des états à confirmer avec protocole_communication.md (E).
+    """
+
+    etat = serializers.ChoiceField(choices=[
+        "demarre",
+        "en_cours",
+        "termine",
+        "interrompu",
+        "obstacle",
+        "batterie_faible",
+    ])
+
+
+class PayloadIncidentSerializer(serializers.Serializer):
+    """Payload d'un message de type 'incident'."""
+
+    type_incident = serializers.ChoiceField(choices=[
+        "obstacle",
+        "capteur_defaillant",
+        "perte_communication",
+        "mesure_invalide",
+    ])
+
+
+_PAYLOAD_PAR_TYPE = {
+    "mesure": PayloadMesureSerializer,
+    "etat": PayloadEtatSerializer,
+    "incident": PayloadIncidentSerializer,
+}
+
+
+class MessageRobotEntrantSerializer(serializers.Serializer):
+    """Validation d'un message entrant du robot.
+
+    Le champ `type` détermine le serializer de payload appliqué. Les champs
+    communs (`message_id`, `num_sequence`, `horodatage`) sont validés en premier,
+    puis le payload est validé par le sous-serializer correspondant.
+
+    Ce serializer ne fait que valider la **structure**. Une mesure invalide
+    (valeur hors plage après contrôle de plausibilité) reste acceptée ici et
+    sera marquée `valide=false` par `handlers.traiter_message`.
+    """
+
+    message_id = serializers.CharField(
+        min_length=16, max_length=16,
+        help_text="16 caractères hexadécimaux (anti-doublon, cf. RG10).",
+    )
+    num_sequence = serializers.IntegerField(
+        min_value=1,
+        help_text="Compteur d'ordre conservé en flash côté ESP32.",
+    )
+    type = serializers.ChoiceField(choices=list(_PAYLOAD_PAR_TYPE.keys()))
+    horodatage = serializers.DateTimeField(
+        help_text="Horodatage ISO 8601 envoyé par le robot.",
+    )
+    mission = serializers.PrimaryKeyRelatedField(
+        queryset=Mission.objects.all(), required=False, allow_null=True,
+    )
+    payload = serializers.JSONField(
+        help_text="Contenu spécifique au type (voir Payload*Serializer).",
+    )
+
+    def validate_message_id(self, valeur):
+        if not re.fullmatch(r"[0-9a-fA-F]{16}", valeur):
+            raise serializers.ValidationError(
+                "message_id doit contenir exactement 16 caractères hexadécimaux "
+                "(chiffres 0-9 et lettres a-f)."
+            )
+        return valeur.lower()
+
+    def validate(self, donnees):
+        type_message = donnees["type"]
+        payload_brut = donnees.get("payload", {})
+
+        serializer_cls = _PAYLOAD_PAR_TYPE[type_message]
+        sous = serializer_cls(data=payload_brut)
+        sous.is_valid(raise_exception=True)
+
+        donnees["payload"] = sous.validated_data
+        return donnees
+
+class MessageRecuSerializer(serializers.ModelSerializer):
+"""Représentation d'un message déjà enregistré (lecture seule)."""
+
+mission = serializers.IntegerField(source="mission.mission_id", read_only=True)
+
+class Meta:
+    model = MessageRecu
+    fields = [
+        "message_id", "num_sequence", "type_message",
+        "contenu", "date_heure", "mission",
+    ]
+    read_only_fields = fields
