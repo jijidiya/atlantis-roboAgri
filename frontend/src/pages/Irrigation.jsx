@@ -107,11 +107,11 @@ function CarteZoneIrrigation({ zone, modification, onModifier }) {
         </small>
       )}
 
-      {refus && (
+            {refus && (
         <p className="erreur">
           Arrosage refusé : {arrosage.error.message}
-          {arrosage.error.details?.validite && (
-            <> (mesure : {arrosage.error.details.validite})</>
+          {arrosage.error.details?.statut_mesure && (
+            <> (mesure : {arrosage.error.details.statut_mesure})</>
           )}
         </p>
       )}
