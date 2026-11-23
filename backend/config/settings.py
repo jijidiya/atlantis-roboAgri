@@ -138,14 +138,10 @@ SPECTACULAR_SETTINGS = {
         {"name": "incidents", "description": "Incidents signalés"},
         {"name": "robot", "description": "Endpoints pour le robot ESP32"},
     ],
-    "ENUM_NAME_OVERRIDES": {
-    "StatutMissionEnum": "apps.missions.models.Mission.Statut",
-    "StatutEtapeEnum": "apps.missions.models.Etape.Statut",
-    "StatutIrrigationEnum": "apps.irrigation.models.Irrigation.Statut",
-},
     "SWAGGER_UI_DIST": "SIDECAR",
     "SWAGGER_UI_FAVORITE_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
+    "DISABLE_ERRORS_AND_WARNINGS": True,
 }
 
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=["http://localhost:5173"])

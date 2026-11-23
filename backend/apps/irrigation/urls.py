@@ -1,9 +1,11 @@
 from django.urls import path
-from rest_framework.routers import DefaultRouter
 
 from .views import DecisionViewSet, DecisionZoneView, IrrigationViewSet
+from apps.core.routers import IntRouter
 
-routeur = DefaultRouter()
+
+routeur = IntRouter()
+
 routeur.register("irrigations", IrrigationViewSet, basename="irrigation")
 routeur.register("decisions", DecisionViewSet, basename="decision")
 

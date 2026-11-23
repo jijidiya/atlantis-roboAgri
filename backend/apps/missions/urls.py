@@ -1,8 +1,10 @@
-from rest_framework.routers import DefaultRouter
-
 from .views import MissionViewSet
 
-routeur = DefaultRouter()
+from apps.core.routers import IntRouter
+
+
+
+routeur = IntRouter()
 routeur.register("missions", MissionViewSet, basename="mission")
 
 urlpatterns = routeur.urls

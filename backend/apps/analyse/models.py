@@ -1,7 +1,5 @@
 """Modèles de l'application « analyse » (module 5).
 
-Table du MPD : analyse.
-
 Une analyse résume les mesures d'une zone sur une période. Les mesures qu'elle
 exploite portent la clé étrangère (`Mesure.analyse`) : il n'y a pas de table
 d'association (RG12).
