@@ -1,7 +1,8 @@
+# ____reseau Wifi ___
 WIFI_SSID = "Junior Home"
 WIFI_PASSWORD = "mot-de-passe"
-API_URL = "http://192.168.x.x:8000"
 
+# ___ API(Backend Django) ___
 
-ROBOT_API_TOKEN = "JuniorEstLePlusBeau"
-ROBOT_ID = "robot-01"
+ADRESSE_API = "http://172.x.x.x:8000"
+JETON_ROBOT = "xxxxxxxxxx"

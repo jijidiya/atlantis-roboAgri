@@ -10,7 +10,7 @@ DEBUG = env("DEBUG", default=False)
 
 AUTH_USER_MODEL = "utilisateurs.Utilisateur"
 
-ALLOWED_HOSTS =env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
 # Application definition
 
