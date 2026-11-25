@@ -5,6 +5,7 @@ entetes = {
     "Content-Type": "application/json",
 }
 def recuperer_mission():
+    """Retourne la mission (dictionnaire) ou None s'il n'y en a pas."""
     reponse = None
     try:
         reponse = requests.get(
@@ -28,6 +29,7 @@ def recuperer_mission():
         if reponse is not None:
             reponse.close()
 def envoyer_message(message):
+    """Envoie un message. Retourne (code_http, corps), ou (None, None) si le réseau est coupé."""
     reponse = None
     try:
         reponse = requests.post(
