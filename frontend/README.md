@@ -3,6 +3,8 @@
 Interface React de l'application RoboAgri-Kin : parcelles, missions, mesures d'humidité, irrigation (recommandations), incidents, historique et rapports.
 
 ## Prérequis
+ 
+ 
 
 - Node.js (version LTS) et npm
 - Le backend Django lancé sur `http://127.0.0.1:8000` (voir `backend/README.md`)
