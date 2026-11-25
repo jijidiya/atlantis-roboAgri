@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import EtatVide from '../components/EtatVide';
 import { useMoi } from '../hooks/useAuth';
 import { useParcelles } from '../hooks/useParcelles';
 import { useMissions } from '../hooks/useMissions';
@@ -55,7 +56,7 @@ export default function Dashboard() {
   const parcelles = useParcelles();
   const missions = useMissions();
   const incidents = useIncidents({ polling: false });
-  const mesures = useMesuresRecentes({ limite: 200 });
+  const mesures = useMesuresRecentes({ limite: 100 }); // 100 = maximum accepté par le backend
 
   const zoneParId = useMemo(() => {
     const map = new Map();
@@ -118,17 +119,16 @@ export default function Dashboard() {
   }, [missions.data]);
 
   const etatGlobal = etatRequete(parcelles);
-  if (etatGlobal === 'chargement') {
-    return <div className="carte">Chargement du tableau de bord…</div>;
+    if (etatGlobal === 'chargement') {
+    return <EtatVide type="chargement" message="Chargement du tableau de bord…" />;
   }
   if (etatGlobal === 'erreur') {
     return (
-      <div className="carte">
-        <p style={{ color: 'crimson' }}>{parcelles.error.message}</p>
-        <button className="bouton" onClick={() => parcelles.refetch()}>
-          Réessayer
-        </button>
-      </div>
+      <EtatVide
+        type="erreur"
+        message={parcelles.error.message}
+        onReessayer={() => parcelles.refetch()}
+      />
     );
   }
 
@@ -184,9 +184,15 @@ export default function Dashboard() {
       </div>
 
       <div className="grille-2">
-        <div className="carte">
+                <div className="carte">
           <h2>Évolution de l'humidité du sol</h2>
-          {series.length === 0 ? (
+          {mesures.isError ? (
+            <EtatVide
+              type="erreur"
+              message={mesures.error.message}
+              onReessayer={() => mesures.refetch()}
+            />
+          ) : series.length === 0 ? (
             <p style={{ color: '#888', padding: '1rem 0' }}>
               Pas encore assez de mesures valides pour tracer une courbe.
             </p>
@@ -210,7 +216,14 @@ export default function Dashboard() {
 
         <div className="carte">
           <h2>À votre attention</h2>
-          {incidentsRecents.length === 0 && (
+                    {incidents.isError && (
+            <EtatVide
+              type="erreur"
+              message={incidents.error.message}
+              onReessayer={() => incidents.refetch()}
+            />
+          )}
+          {!incidents.isError && incidentsRecents.length === 0 && (
             <p style={{ color: '#888' }}>Aucun incident récent.</p>
           )}
           {incidentsRecents.map((i) => (
@@ -229,7 +242,13 @@ export default function Dashboard() {
 
       <div className="carte">
         <h2>Missions récentes</h2>
-        {missionsRecentes.length === 0 ? (
+                {missions.isError ? (
+          <EtatVide
+            type="erreur"
+            message={missions.error.message}
+            onReessayer={() => missions.refetch()}
+          />
+        ) : missionsRecentes.length === 0 ? (
           <p style={{ color: '#888' }}>Aucune mission enregistrée.</p>
         ) : (
           <table className="tableau">

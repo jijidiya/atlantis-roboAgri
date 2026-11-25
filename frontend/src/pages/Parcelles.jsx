@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import EtatVide from '../components/EtatVide';
 import { useParcelles } from '../hooks/useParcelles';
 import { useMesuresRecentes } from '../hooks/useMesures';
 import { etatRequete } from '../hooks/etatRequete';
@@ -12,7 +13,7 @@ import {
 export default function Parcelles() {
   const parcellesQuery = useParcelles();
   // CORRECTION 1 : le hook attend `limite`, pas `limit`.
-  const mesuresQuery = useMesuresRecentes({ limite: 200 });
+  const mesuresQuery = useMesuresRecentes({ limite: 100 }); // 100 = maximum accepté par le backend
   const [recherche, setRecherche] = useState('');
   const [culture, setCulture] = useState('Toutes');
 
@@ -62,20 +63,22 @@ export default function Parcelles() {
     return h < Number(z.humidite_minimum) || h > Number(z.humidite_maximum);
   }).length;
 
-  if (etat === 'chargement') {
-    return <div className="carte">Chargement des parcelles…</div>;
+    if (etat === 'chargement') {
+    return <EtatVide type="chargement" message="Chargement des parcelles…" />;
   }
 
   if (etat === 'erreur') {
     return (
-      <div className="carte">
-        <p>Impossible de charger les parcelles.</p>
-        <p style={{ color: 'crimson' }}>{parcellesQuery.error.message}</p>
-        <button className="bouton" onClick={() => parcellesQuery.refetch()}>
-          Réessayer
-        </button>
-      </div>
+      <EtatVide
+        type="erreur"
+        message={`Impossible de charger les parcelles. ${parcellesQuery.error.message}`}
+        onReessayer={() => parcellesQuery.refetch()}
+      />
     );
+  }
+
+  if (etat === 'vide') {
+    return <EtatVide message="Aucune parcelle enregistrée pour le moment." />;
   }
 
   return (
@@ -91,6 +94,14 @@ export default function Parcelles() {
           + Ajouter une parcelle
         </button>
       </div>
+
+      {mesuresQuery.isError && (
+        <EtatVide
+          type="erreur"
+          message={`Humidité indisponible : ${mesuresQuery.error.message}`}
+          onReessayer={() => mesuresQuery.refetch()}
+        />
+      )}
 
       <div className="stats">
         <div className="carte">

@@ -33,7 +33,7 @@ function Courbe({ valeurs, couleur, largeur = 600, hauteur = 120 }) {
 
 export default function Capteurs() {
   // Polling 3 s : page de monitoring. Mets `polling: false` si tu trouves ça trop agressif.
-  const mesures = useMesures({ statut: 'valide', polling: true });
+  const mesures = useMesures({ statut: 'valide', toutes: true, polling: true });
   const zones = useZones();
 
   const zonesParId = useMemo(() => {
@@ -171,7 +171,10 @@ export default function Capteurs() {
         <div className="carte">
           <p className="carte-titre">Humidité moyenne</p>
           <p className="carte-valeur">{moyHumidite != null ? `${moyHumidite} %` : '—'}</p>
-          <p className="carte-detail">{mesuresListe.length} mesure(s) valide(s)</p>
+          <p className="carte-detail">
+            Moyenne des {mesuresListe.length} dernières mesures valides
+            {mesures.data?.count > mesuresListe.length && ` (sur ${mesures.data.count} au total)`}
+          </p>
         </div>
       </div>
 

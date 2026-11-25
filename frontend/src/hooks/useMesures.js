@@ -11,7 +11,7 @@ export const clesMesures = {
  * polling : true pendant une mission active -> refresh toutes les 3 s.
  * Securite : depend de services.lister_mesures cote backend (filtre user a verifier).
  */
-export function useMesures({ mission, zone, statut, du, au, polling = false } = {}) {
+export function useMesures({ mission, zone, statut, du, au, toutes = false, polling = false } = {}) {
   const params = new URLSearchParams();
   if (mission) params.set('mission', mission);
   if (zone) params.set('zone', zone);
@@ -23,7 +23,7 @@ export function useMesures({ mission, zone, statut, du, au, polling = false } = 
   return useQuery({
     queryKey: clesMesures.liste({ mission, zone, statut, du, au }),
     queryFn: () => api.get(`/mesures/${suffixe}`),
-    enabled: Boolean(mission || zone),
+    enabled: Boolean(mission || zone || toutes),
     refetchInterval: polling ? 3000 : false,
   });
 }
