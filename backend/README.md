@@ -61,13 +61,15 @@ Contenu de `.env.example` :
 
 ```
 DEBUG=True
-SECRET_KEY=change-moi-par-une-longue-chaine-aleatoire
+SECRET_KEY=change-moi-par-une-cle-secrete-aleatoire
 BASE_NOM=roboagri
 BASE_UTILISATEUR=roboagri
 BASE_MOT_DE_PASSE=roboagri
 BASE_HOTE=localhost
 BASE_PORT=5432
-CLE_ROBOT=change-moi-par-une-cle-robot
+CLE_ROBOT=change-moi-par-un-jeton-robot
+ALLOWED_HOSTS=localhost,127.0.0.1,<votre_ip_locale>
+CORS_ALLOWED_ORIGINS=http://localhost:5173
 ```
 
 Pour générer une vraie `SECRET_KEY` :

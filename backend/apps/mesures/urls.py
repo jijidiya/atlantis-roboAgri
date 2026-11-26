@@ -1,8 +1,9 @@
-from rest_framework.routers import DefaultRouter
-
 from .views import MesureViewSet
 
-routeur = DefaultRouter()
+from apps.core.routers import IntRouter
+
+
+routeur = IntRouter()
 routeur.register("mesures", MesureViewSet, basename="mesure")
 
 urlpatterns = routeur.urls
