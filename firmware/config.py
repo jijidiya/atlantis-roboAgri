@@ -1,53 +1,36 @@
-"""Configuration du firmware ESP32 — capteur d'humidité RÉSISTIF.
+"""Configuration du firmware ESP32 - RoboAgri-Kin.
 
-⚠️ Contient des secrets (Wi-Fi, jeton robot). Ignoré par Git.
-   Modèle versionné : `config.example.py`.
+Les secrets (Wi-Fi, IP, jeton) sont importes depuis `secrets.py`.
+Ce fichier peut etre versionne sur Git sans risque.
 """
-
-
-import time
-import network
 import secrets
 
-wlan = network.WLAN(network.STA_IF)
-wlan.active(False)
-time.sleep_ms(300)
-wlan.active(True)
-wlan.connect(secrets.WIFI_SSID,secrets.WIFI_PASSWORD)
+# --- Secrets importes (pour que le reste du code utilise config.XXX) ---
+WIFI_SSID = secrets.WIFI_SSID
+WIFI_PASSWORD = secrets.WIFI_PASSWORD
+ADRESSE_API = secrets.ADRESSE_API
+JETON_ROBOT = secrets.JETON_ROBOT
 
-for _ in range(20):
-  if wlan.isconnected():
-    break
-  time.sleep_ms(500)
-
-print("Connecte:", wlan.isconnected(), "Config:", wlan.ifconfig())
-
-
-# --- API ---
-# IP du PC trouvée avec `ipconfig` (section Wi-Fi, ligne « Adresse IPv4 »)
-ADRESSE_API = secrets.API_URL
-
+# --- API Chemins ---
 CHEMIN_MISSION = "/api/v1/robot/mission-suivante/"
 CHEMIN_MESSAGES = "/api/v1/robot/messages/"
 
-# Jeton robot (identique à CLE_ROBOT dans backend/.env)
-JETON_ROBOT = secrets.ROBOT_API_TOKEN
+# --- Delais (secondes) ---
+DELAI_ATTENTE = 20
+DELAI_POLLING = 3
+DELAI_MESURE = 0.1
 
-
-DELAI_ATTENTE = 20     # timeout HTTP
-DELAI_POLLING = 3      # entre deux GET mission au repos
+# --- Capteur d'humidite ---
 PIN_CAPTEUR = 34
 PIN_ALIMENTATION = 25
-
 DELAI_STABILISATION_MS = 300
 NOMBRE_ECHANTILLONS = 10
-
-
 DELAI_ECHANTILLON_MS = 30
 
-VALEUR_SEC = 3500      # ADC quand capteur à l'air (0 %)
-VALEUR_HUMIDE = 1200   # ADC quand capteur dans l'eau (100 %)
+# --- Etalonnage ---
+VALEUR_SEC = 3500
+VALEUR_HUMIDE = 1200
 
-
+# --- Collecte (RG7) ---
 NOMBRE_POINTS = 3
 NOMBRE_LECTURES = 3
